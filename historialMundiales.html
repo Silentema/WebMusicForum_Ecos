@@ -23,7 +23,7 @@
         </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MATCHIO - Mundiales</title>
+    <title>MATCHIO - Géneros Musicales</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&family=Poppins:wght@700&display=swap" rel="stylesheet">
@@ -36,37 +36,35 @@
 
               <button class="back-btn" onclick="history.back()" style="top:90px">←</button>
 
-
-
         <div class="timeline-section">
             <div class="timeline-container" id="timeline-container">
-                <div class="timeline-item" data-year="1998" onclick="selectYear(1998)">
-                    <a href="equipos.html"><img src="Image/1998.webp" alt="1998" class="timeline-logo small"></a>
-                    <div class="timeline-year faded">1998</div>
+                <div class="timeline-item" data-gendre="Pop" onclick="selectGendre('Pop')">
+                    <a href="equipos.html"><img src="Image/mj.png" alt="Michael Jackson" class="timeline-logo small"></a>
+                    <div class="timeline-year faded">Pop</div>
                 </div>
-                <div class="timeline-item" data-year="2002" onclick="selectYear(2002)">
-                    <a href="equipos.html"><img src="Image/2002.webp" alt="2002" class="timeline-logo small"></a>
-                    <div class="timeline-year faded">2002</div>
+                <div class="timeline-item" data-gendre="Rock" onclick="selectGendre('Rock')">
+                    <a href="equipos.html"><img src="Image/kc.png" alt="Kurt Cobain" class="timeline-logo small"></a>
+                    <div class="timeline-year faded">Rock</div>
                 </div>
-                <div class="timeline-item" data-year="2006" onclick="selectYear(2006)">
-                    <a href="equipos.html"><img src="Image/2006.svg" alt="2006" class="timeline-logo"></a>
-                    <div class="timeline-year inactive">2006</div>
+                <div class="timeline-item" data-gendre="Country" onclick="selectGendre('Country')">
+                    <a href="equipos.html"><img src="Image/dp.png" alt="Dolly Parton" class="timeline-logo"></a>
+                    <div class="timeline-year inactive">Country</div>
                 </div>
-                <div class="timeline-item" data-year="2010" onclick="selectYear(2010)">
-                    <a href="equipos.html"><img src="Image/2010.webp" alt="2010" class="timeline-logo large"></a>
-                    <div class="timeline-year active">2010</div>
+                <div class="timeline-item" data-gendre="Rap" onclick="selectGendre('Rap')">
+                    <a href="equipos.html"><img src="Image/tsh.png" alt="Tupac Shakur" class="timeline-logo large"></a>
+                    <div class="timeline-year active">Rap</div>
                 </div>
-                <div class="timeline-item" data-year="2014" onclick="selectYear(2014)">
-                    <a href="equipos.html"><img src="Image/2014.webp" alt="2014" class="timeline-logo"></a>
-                    <div class="timeline-year inactive">2014</div>
+                <div class="timeline-item" data-gendre="Regional" onclick="selectGendre('Regional')">
+                    <a href="equipos.html"><img src="Image/jg.png" alt="Juan Gabriel" class="timeline-logo"></a>
+                    <div class="timeline-year inactive">Regional</div>
                 </div>
-                <div class="timeline-item" data-year="2018" onclick="selectYear(2018)">
-                    <a href="equipos.html"><img src="Image/2018.png" alt="2018" class="timeline-logo small"></a>
-                    <div class="timeline-year faded">2018</div>
+                <div class="timeline-item" data-gendre="Electronica" onclick="selectGendre('Electronica')">
+                    <a href="equipos.html"><img src="Image/punk.png" alt="Daft Punk" class="timeline-logo small"></a>
+                    <div class="timeline-year faded">Electronica</div>
                 </div>
-                <div class="timeline-item" data-year="2022" onclick="selectYear(2022)">
-                    <a href="equipos.html"><img src="Image/2022.png" alt="2022" class="timeline-logo small"></a>
-                    <div class="timeline-year faded">2022</div>
+                <div class="timeline-item" data-gendre="Reggaeton" onclick="selectGendre('Reggaeton')">
+                    <a href="equipos.html"><img src="Image/kg.png" alt="Karol G" class="timeline-logo small"></a>
+                    <div class="timeline-year faded">Reggaeton</div>
                 </div>
             </div>
 
@@ -82,323 +80,20 @@
 
         <div class="divider"></div>
 
-
-
-
-
-
-
     <main>
-        <h1>Mundiales</h1>
+        
+        <!-- Toda la información del mundial (Curiosidades, Campeones, Grupos, etc.) ha sido eliminada -->
+        <!-- Aquí puedes empezar a colocar tu nueva información musical -->
 
-       
-
-        <!-- Info Section -->
-        <div class="info-section">
-            <div class="info-left">
-                <div class="info-item">
-                    <span class="info-label">País sede</span>
-                </div>
-                <div class="info-item">
-                    <a href="equipos.html"><img src="https://api.builder.io/api/v1/image/assets/TEMP/a677495d05f9750273eba3bf0b4619f83708a51f?width=266" alt="Sudáfrica" class="country-flag"></a>
-                    <span class="info-value">Sudáfrica</span>
-                </div>
-            </div>
-            <div class="info-right">
-                <div class="info-item">
-                    <span class="info-label">Periodo:</span>
-                    <span class="info-value">12 Ago - 28 Oct</span>
-                </div>
-                <div class="info-item">
-                    <span class="info-label">Partidos:</span>
-                    <span class="info-value">32</span>
-                </div>
-                <div class="info-item">
-                    <span class="info-label">Goles:</span>
-                    <span class="info-value">87</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="champion-section">
-            
-            <div class="champion-display">
-                <div class="team-item">
-                    <a href="equipos.html"><img src="https://api.builder.io/api/v1/image/assets/TEMP/eae26b2632d7d843dad39c6a21035037813072d3?width=266" alt="España" class="team-flag"></a>
-                    <span class="team-name">España</span>
-                </div>
-                <div class="score-display">
-                    <div class="final-label">FINAL</div>
-                    <div class="score-circle">
-                        <div class="score-text">3 - 2</div>
-                        <div class="score-time">98'</div>
-                    </div>
-                </div>
-                <div class="team-item">
-                    <a href="equipos.html"><img src="https://api.builder.io/api/v1/image/assets/TEMP/f7c449e82a43d11502752632ec99689cd1e1233f?width=266" alt="Países Bajos" class="team-flag"></a>
-                    <span class="team-name">Países Bajos</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="champion-display" style="margin-top: 80px;">
-            <img src="Image/copaGanador.png" alt="Copa del Mundo" class="trophy-image">
-            <div class="team-item">
-                <h2 class="champion-title">Campeón</h2>
-
-                <a href="equipos.html"><img src="https://api.builder.io/api/v1/image/assets/TEMP/eae26b2632d7d843dad39c6a21035037813072d3?width=266" alt="España" class="team-flag"></a>
-                
-            </div>
-        </div>
-
-        <!-- Curiosidades -->
-        <section style="margin-top: 60px;">
-            <h2 class="section-title">Curiosidades</h2>
-            <p class="section-content">
-                El Mundial de Sudáfrica 2010 fue el primero en África y estuvo lleno de curiosidades, como
-                el uso masivo de las vuvuzelas, que generaron un sonido de fondo constante. También destacó 
-                por la mascota Zakumi,  un leopardo antropomorfo con pelo verde. Además, fue el mundial que vio
-                coronarse a España por primera vez, convirtiéndose en el campeón con el menor número de goles 
-                anotados (8 goles)
-            </p>
-        </section>
-
-        <div class="list-container">
-            <div class="list-section">
-                <h2 class="section-title">Selecciones (paises)</h2>
-                <div class="list-item">
-                    <span class="list-number">1.</span>
-                    <a href="equipos.html"><img src="https://api.builder.io/api/v1/image/assets/TEMP/79846cc5c4beaae7fe0a2d7f4eb4ff79daf4ac21?width=210" alt="España" class="list-flag"></a>
-                    <span class="list-text">España</span>
-                </div>
-                <div class="list-item">
-                    <span class="list-number">2.</span>
-                    <a href="equipos.html"><img src="https://api.builder.io/api/v1/image/assets/TEMP/a4efab7207ac85bcf8abe6f95742cdeb564b0ea7?width=210" alt="Países Bajos" class="list-flag"></a>
-                    <span class="list-text">Países Bajos</span>
-                </div>
-                <div class="list-item">
-                    <span class="list-number">3.</span>
-                    <a href="equipos.html"><img src="https://api.builder.io/api/v1/image/assets/TEMP/3da6bf1b220ae8c6f591ac789d2e98bb74b2f9ca?width=210" alt="Alemania" class="list-flag"></a>
-                    <span class="list-text">Alemania</span>
-                </div>
-                <div class="list-item">
-                    <span class="list-number">4.</span>
-                    <a href="equipos.html"><img src="https://api.builder.io/api/v1/image/assets/TEMP/6fc5987aaf07e2a1c6e569ab5b3e4a984898b073?width=210" alt="Uruguay" class="list-flag"></a>
-                    <span class="list-text">Uruguay</span>
-                </div>
-                <div class="list-item">
-                    <span class="list-number">5.</span>
-                    <a href="equipos.html"><img src="https://api.builder.io/api/v1/image/assets/TEMP/518c5dea6c68d828e75bf9c28917950e50475f37?width=210" alt="Argentina" class="list-flag"></a>
-                    <span class="list-text">Argentina</span>
-                </div>
-                <div class="list-item">
-                    <span class="list-number">6.</span>
-                    <a href="equipos.html"><img src="https://api.builder.io/api/v1/image/assets/TEMP/3d4929b3281b8f888f34ba4f9465b3ee137e2286?width=210" alt="Brasil" class="list-flag"></a>
-                    <span class="list-text">Brasil</span>
-                </div>
-                <div class="list-item">
-                    <span class="list-number">7.</span>
-                    <a href="equipos.html"><img src="https://api.builder.io/api/v1/image/assets/TEMP/bc7cfc494b52f170f4ce78ce2bb470abbcf551ca?width=210" alt="Ghana" class="list-flag"></a>
-                    <span class="list-text">Ghana</span>
-                </div>
-                <div class="list-item">
-                    <span class="list-number">8.</span>
-                    <a href="equipos.html"><img src="https://api.builder.io/api/v1/image/assets/TEMP/7d7514fac233c1129995194c4c475124243d8dbb?width=210" alt="Paraguay" class="list-flag"></a>
-                    <span class="list-text">Paraguay</span>
-                </div>
-                <div class="list-item">
-                    <span class="list-number">9.</span>
-                    <a href="equipos.html"><img src="https://api.builder.io/api/v1/image/assets/TEMP/485a4d434ce8e969ab764d17585c7f1cc173f62c?width=210" alt="Japón" class="list-flag"></a>
-                    <span class="list-text">Japon</span>
-                </div>
-                <div class="list-item">
-                    <span class="list-number">10.</span>
-                    <a href="equipos.html"><img src="https://api.builder.io/api/v1/image/assets/TEMP/cb668930740294b42808061d7d15f68ac5dec3df?width=210" alt="Chile" class="list-flag"></a>
-                    <span class="list-text">Chile</span>
-                </div>
-            </div>
-
-            <!-- Mayores Goleadores -->
-            <div class="list-section">
-               
-                <div class="info-right">
-                    <div class="info-item">
-                        <span class="info-label">Mayores goleadores</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="list-number">1.</span>
-                        <span class="list-text">Thomas Müller (Alemania)</span> 
-                    </div>
-                    <div class="info-item">
-                        <span class="list-number">2.</span>
-                        <span class="list-text">Wesley Sneijder (Paises Bajos)</span> 
-                    </div>
-                    <div class="info-item">
-                        <span class="list-number">1.</span>
-                        <span class="list-text">David Villa (España)</span> 
-                    </div>
-                </div>    
-
-
-
-                
-            </div>
-        </div>
-
-        <div class="list-container">
-            <div class="list-section">
-                <h2 class="section-title">Nuevos debutantes</h2>
-                    <div class="list-item">
-                        <a href="equipos.html"><img src="https://api.builder.io/api/v1/image/assets/TEMP/518c5dea6c68d828e75bf9c28917950e50475f37?width=210" alt="Argentina" class="list-flag"></a>
-                        <span class="list-text">Argentina</span>
-                    </div>
-                    <div class="list-item">
-                        <a href="equipos.html"><img src="https://api.builder.io/api/v1/image/assets/TEMP/3d4929b3281b8f888f34ba4f9465b3ee137e2286?width=210" alt="Brasil" class="list-flag"></a>
-                        <span class="list-text">Brasil</span>
-                    </div>
-                    <div class="list-item">
-                        <a href="equipos.html"><img src="https://api.builder.io/api/v1/image/assets/TEMP/bc7cfc494b52f170f4ce78ce2bb470abbcf551ca?width=210" alt="Ghana" class="list-flag"></a>
-                        <span class="list-text">Ghana</span>
-                    </div>
-                    <div class="list-item">
-                        <a href="equipos.html"><img src="https://api.builder.io/api/v1/image/assets/TEMP/7d7514fac233c1129995194c4c475124243d8dbb?width=210" alt="Paraguay" class="list-flag"></a>
-                        <span class="list-text">Paraguay</span>
-                    </div>
-            </div>
-
-            
-            <div class="list-section">
-               
-                <div class="info-right">
-
-                    <div class="info-item">
-                        <span class="section-title">Selecciones ausentes</span>
-                    </div>
-
-                    <div class="info-item">
-                        <span class="list-text">Suecia</span>
-                        <a href="equipos.html"><img src="https://api.builder.io/api/v1/image/assets/TEMP/b6f17aa37658d754c2c930ee16222a6d9c682e52?width=210" alt="Suecia" class="list-flag"></a>
-                        
-                    </div>
-
-                    <div class="info-item">
-                        <span class="list-text">Rusia</span>
-                         <a href="equipos.html"><img src="https://api.builder.io/api/v1/image/assets/TEMP/0ad4d4f7e531b18923fabbf1afc9d18b1391f503?width=210" alt="Rusia" class="list-flag"></a>
-                        
-                    </div>
-
-                    <div class="info-item">
-                        <span class="list-text">Ecuador</span>
-                         <a href="equipos.html"><img src="https://api.builder.io/api/v1/image/assets/TEMP/22c6376bf130b4194434578b6f70e694343e7420?width=210" alt="Ecuador" class="list-flag"></a>
-                        
-                    </div>
-
-                    <div class="info-item">
-                        <span class="list-text">Egipto</span>
-                         <a href="equipos.html"><img src="https://api.builder.io/api/v1/image/assets/TEMP/bff8df205d072204a312b4693cfcf2685759430c?width=210" alt="Egipto" class="list-flag"></a>
-                        
-                    </div>
-                    
-                </div>
-            </div>    
-
-            
-
-        <section style="margin-top: 60px;">
-            <h2 class="section-title">Grupos</h2>
-            <div class="groups-container">
-                <div class="group-section">
-                    <h3 class="group-title">Grupo 1</h3>
-                    <div class="list-item">
-                        <a href="equipos.html"><img src="https://api.builder.io/api/v1/image/assets/TEMP/5cf244b821de9c0a690de70a2798e94a50af5df7?width=210" alt="Sudáfrica" class="list-flag"></a>
-                        <span class="list-text">Sudáfrica</span>
-                    </div>
-                    <div class="list-item">
-                        <a href="equipos.html"><img src="https://api.builder.io/api/v1/image/assets/TEMP/8a70f3153ff0e754c7a03511142c68d2305d237d?width=210" alt="Mexico" class="list-flag small"></a>
-                        <span class="list-text">Mexico</span>
-                    </div>
-                    <div class="list-item">
-                        <a href="equipos.html"><img src="https://api.builder.io/api/v1/image/assets/TEMP/6fc5987aaf07e2a1c6e569ab5b3e4a984898b073?width=210" alt="Uruguay" class="list-flag"></a>
-                        <span class="list-text">Uruguay</span>
-                    </div>
-                    <div class="list-item">
-                        <a href="equipos.html"><img src="Image/francia.png" alt="Francia" class="list-flag"></a>
-                        <span class="list-text">Francia</span>
-                    </div>
-                </div>
-
-                
-               <!--
-                    <div class="info-right">
-
-                        <div class="info-item">
-                            <span class="section-title">Estoy poniendolo a la derecha</span>
-                        </div>
-
-                        <div class="info-item">
-                            <span class="list-text">Argentina</span>
-                            <img src="https://api.builder.io/api/v1/image/assets/TEMP/518c5dea6c68d828e75bf9c28917950e50475f37?width=210" alt="Argentina" class="list-flag">
-    
-                        </div>
-                        
-
-                        <div class="info-item">
-                            <span class="list-text">Corea del sur</span>
-                            <img src="https://api.builder.io/api/v1/image/assets/TEMP/518c5dea6c68d828e75bf9c28917950e50475f37?width=210" alt="Argentina" class="list-flag">
-    
-                            
-                        </div>
-
-                        <div class="info-item">
-                            <span class="list-text">Grecia</span>
-                            <img src="https://api.builder.io/api/v1/image/assets/TEMP/bd3c26e3f5b75c11b2817e296f8ac65cefafe530?width=210" alt="Grecia" class="list-flag">
-                            
-                        </div>
-
-                        <div class="info-item">
-                            <span class="list-text">Nigeria</span>
-                            <img src="https://api.builder.io/api/v1/image/assets/TEMP/d6e2f9b561ab6be9e157e655cb6ddfb0295becdf?width=210" alt="Nigeria" class="list-flag small">
-                            
-                        </div>
-                        
-                    </div>
-                -->
-
-
-
-
-
-
-
-                <div class="group-section">
-                    <h3 class="group-title">Grupo 2</h3>
-                    <div class="list-item">
-                        <a href="equipos.html"><img src="https://api.builder.io/api/v1/image/assets/TEMP/518c5dea6c68d828e75bf9c28917950e50475f37?width=210" alt="Argentina" class="list-flag"></a>
-                        <span class="list-text">Argentina</span>
-                    </div>
-                    <div class="list-item">
-                          <a href="equipos.html"><img src="Image/corea.png" alt="Corea del Sur" class="list-flag"></a>
-                        <span class="list-text">Corea del Sur</span>
-                       
-                    </div>
-                    <div class="list-item">
-                        <a href="equipos.html"><img src="https://api.builder.io/api/v1/image/assets/TEMP/bd3c26e3f5b75c11b2817e296f8ac65cefafe530?width=210" alt="Grecia" class="list-flag"></a>
-                        <span class="list-text">Grecia</span>
-                    </div>
-                    <div class="list-item">
-                        <a href="equipos.html"><img src="https://api.builder.io/api/v1/image/assets/TEMP/d6e2f9b561ab6be9e157e655cb6ddfb0295becdf?width=210" alt="Nigeria" class="list-flag small"></a>
-                        <span class="list-text">Nigeria</span>
-                    </div>
-                </div>
-            </div>
-        </section>
     </main>
 
     <script>
-        let currentIndex = 3; // Índice del elemento activo (2010 por defecto)
+        let currentIndex = 3; // Índice del elemento activo (Rap por defecto)
         const timelineItems = document.querySelectorAll('.timeline-item');
         const timelineContainer = document.getElementById('timeline-container');
 
+        // Nota: Si vas a usar esta función de tu proyecto anterior, recuerda cambiar el arreglo de "years"
+        // por los nombres de tus géneros ['Pop', 'Rock', 'Country', 'Rap', 'Regional', 'Electronica', 'Reggaeton']
         function selectYear(year) {
             const years = [1998, 2002, 2006, 2010, 2014, 2018, 2022];
             const newIndex = years.indexOf(year);

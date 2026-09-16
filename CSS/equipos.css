@@ -32,37 +32,34 @@
 }
 
 :root {
-    --bg: #F5F5F5;
-    --text: #222;
-    --sub: #777;
-    --line: #999;
+    --bg: #F8F9FA;
+    --text: #222222;
+    --sub: #666666;
+    --line: #EAEAEA; /* Borde más suave */
     --header: #121212;
-    --btn: #D24242;
-    --white: #fff;
+    --btn: #D24242; /* Rojo Country */
+    --white: #ffffff;
     --card-bg: #ffffff;
     --input-bg: #f9f9f9;
-    --border: #686868;
-    --hover: #ddd;
+    --border: #E0E0E0;
+    --hover: #f0f0f0;
+    --shadow: rgba(0, 0, 0, 0.08); /* Sombra elegante */
 }
 
 /* Dark theme variables */
 body.dark-theme {
-    --bg: #1a1a1a;
+    --bg: #121212;
     --text: #e0e0e0;
-    --sub: #aaa;
-    --line: #444;
-    --header: #000;
+    --sub: #aaaaaa;
+    --line: #2A2A2A;
+    --header: #000000;
     --btn: #ff6b6b;
     --white: #2d2d2d;
-    --card-bg: #2d2d2d;
-    --input-bg: #333;
-    --border: #555;
+    --card-bg: #1E1E1E;
+    --input-bg: #333333;
+    --border: #444444;
     --hover: #333333;
-}
-
-/* Variación específica del hero para modo oscuro */
-body.dark-theme .hero {
-    background: linear-gradient(90deg, var(--bg) 0%, rgba(56, 133, 197, 0.15) 50%);
+    --shadow: rgba(0, 0, 0, 0.4);
 }
 
 body {
@@ -71,14 +68,19 @@ body {
     color: var(--text);
     line-height: 1.6;
     min-height: 100vh;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
-
-/* Header styles removed - using header1.css */
 
 /* Hero Section */
 .hero {
-    background: linear-gradient(90deg, var(--bg) 0%, rgba(56, 133, 197, 0.3) 100%);
-    padding: 2rem;
+    /* Degradado sutil con el color rojo principal */
+    background: linear-gradient(135deg, var(--bg) 0%, rgba(210, 66, 66, 0.08) 100%);
+    padding: 3rem 2rem;
+    border-bottom: 1px solid var(--line);
+}
+
+body.dark-theme .hero {
+    background: linear-gradient(135deg, var(--bg) 0%, rgba(210, 66, 66, 0.15) 100%);
 }
 
 .hero-container {
@@ -86,7 +88,7 @@ body {
     margin: 0 auto;
     display: flex;
     align-items: center;
-    justify-content: left;
+    justify-content: flex-start;
     gap: 2rem;
     flex-wrap: wrap;
     padding: 0 50px;
@@ -96,367 +98,357 @@ body {
     width: 100px;
     height: 120px;
     object-fit: contain;
-    filter: drop-shadow(0 0 6px rgba(0, 0, 0, 0.30));
+    filter: drop-shadow(0 4px 8px var(--shadow));
 }
 
 .hero-content h1 {
-    font-size: 30px;
-    font-weight: bold;
+    font-size: 36px;
+    font-weight: 800;
     color: var(--text);
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.5px;
 }
 
 /* Main Container */
 .container {
-    max-width: 1000px;
+    max-width: 1100px;
     margin: 0 auto;
-    padding: 2rem;
+    padding: 3rem 2rem;
 }
 
 /* Section Heading */
 .section-heading {
-    font-size: 20px;
-    font-weight: 600;
-    margin: 2rem 0 1.5rem 0;
+    font-size: 24px;
+    font-weight: 700;
+    margin: 3rem 0 2rem 0;
     color: var(--text);
+    position: relative;
+    padding-bottom: 0.5rem;
 }
 
 /* General Information */
 .info-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 2rem;
-    margin-bottom: 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+    background: var(--card-bg);
+    padding: 2rem;
+    border-radius: 20px;
+    box-shadow: 0 4px 20px var(--shadow);
+    border: 1px solid var(--line);
 }
 
 .info-item {
     display: flex;
-    gap: 1rem;
+    flex-direction: column;
+    gap: 0.25rem;
 }
 
 .info-label {
+    font-size: 14px;
     font-weight: 500;
-    min-width: 140px;
-    color: var(--text);
+    color: var(--sub);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .info-value {
-    font-weight: 500;
+    font-size: 18px;
+    font-weight: 600;
     color: var(--text);
 }
 
 /* Statistics */
-.stats-section {
-    margin: 2rem 0;
-}
-
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: 2rem;
     margin-bottom: 2rem;
 }
 
 .stat-item {
     text-align: center;
+    background: var(--card-bg);
+    padding: 1.5rem 1rem;
+    border-radius: 20px;
+    box-shadow: 0 4px 20px var(--shadow);
+    border: 1px solid var(--line);
+    transition: transform 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%; 
+}
+
+.stat-item:hover {
+    transform: translateY(-5px);
 }
 
 .stat-number {
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--text);
+    font-size: 24px; 
+    font-weight: 800;
+    color: var(--btn);
     margin-bottom: 0.5rem;
+    line-height: 1.2;
+    word-wrap: break-word;
+    max-width: 100%;
 }
 
 .stat-label {
-    font-size: 16px;
-    color: var(--text);
-    font-weight: 400;
+    font-size: 14px;
+    color: var(--sub);
+    font-weight: 500;
 }
 
-/* MVP Cards */
+/* Tarjetas Globales (Para MVPs, Partidos y Jugadores) */
+.mvp-card, .match-card, .player-card {
+    background: var(--card-bg);
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    box-shadow: 0 8px 24px var(--shadow);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden;
+}
+
+.mvp-card:hover, .match-card:hover, .player-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 16px 32px var(--shadow);
+}
+
+/* MVP Cards (Leyendas) */
 .mvp-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 2rem;
-    margin-bottom: 2rem;
-    max-width: 600px;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2.5rem;
+    margin-bottom: 4rem;
+    max-width: 900px;
     margin-left: auto;
     margin-right: auto;
 }
 
 .mvp-card {
-    background: var(--card-bg);
-    border: 2px solid var(--line);
-    border-radius: 30px;
-    overflow: hidden;
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 1.5rem;
-    height: 420px;
     text-align: center;
 }
 
-.mvp-card-badge {
-    width: 100%;
-    height: auto;
-    margin-bottom: 1rem;
-}
-
 .mvp-player-image {
-    width: 200px;
-    height: auto;
+    width: 100%;
+    height: 280px;
     object-fit: cover;
-    border-radius: 20px;
-    margin-bottom: 1rem;
+    border-radius: 16px;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
 .mvp-player-name {
-    font-size: 16px;
-    font-weight: 400;
+    font-size: 22px;
+    font-weight: 700;
     color: var(--text);
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.25rem;
 }
 
 .mvp-player-position {
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 500;
-    color: var(--text);
+    color: var(--btn);
+    margin-bottom: 1rem;
 }
 
 .mvp-stats {
-    margin-top: 1rem;
+    background: var(--bg);
+    width: 100%;
+    padding: 1rem;
+    border-radius: 12px;
+    margin-top: auto;
 }
 
 .mvp-number {
-    font-size: 20px;
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--text);
+}
+
+.mvp-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--sub);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Recent Matches (Duetos) */
+.matches-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 2rem;
+    margin-bottom: 4rem;
+}
+
+.match-card {
+    padding: 2rem;
+    text-align: center;
+}
+
+.match-phase {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0.25rem;
+}
+
+.match-date {
+    font-size: 13px;
+    color: var(--sub);
+    margin-bottom: 1.5rem;
+    font-weight: 500;
+}
+
+.match-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.match-teams {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    width: 80px;
+}
+
+.team-logo {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 4px 10px var(--shadow);
+    border: 3px solid var(--card-bg);
+}
+
+.team-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    text-align: center;
+}
+
+.match-score {
+    font-size: 18px;
+    font-weight: 700;
+    font-style: italic;
+    color: var(--btn);
+    text-align: center;
+    flex: 1;
+    line-height: 1.3;
+}
+
+.match-line {
+    border-top: 1px dashed var(--border);
+    margin: 1.5rem 0 0 0;
+}
+
+/* Player Cards (Artistas) */
+.players-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 2rem;
+    margin-bottom: 4rem;
+}
+
+.player-card {
+    text-align: center;
+    padding: 1.25rem;
+}
+
+.player-image {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    border-radius: 16px;
+    margin: 0 auto 1rem;
+    display: block;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.player-name {
+    font-size: 18px;
     font-weight: 700;
     color: var(--text);
     margin-bottom: 0.5rem;
 }
 
-.mvp-label {
-    font-size: 14px;
-    font-weight: 300;
-    color: var(--text);
-}
-
-/* Recent Matches */
-.matches-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 2rem;
-    margin-bottom: 2rem;
-}
-
-.match-card {
-    background: var(--card-bg);
-    border: 2px solid var(--line);
-    padding: 1.5rem;
-    border-radius: 30px;
-    text-align: center;
-}
-
-.match-date {
-    font-size: 14px;
-    color: var(--sub);
-    margin-bottom: 1rem;
-    font-weight: 300;
-}
-
-.match-phase {
-    font-size: 14px;
-    color: var(--sub);
-    margin-bottom: 1rem;
-}
-
-.match-teams {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 1rem;
-    margin: 1rem 0;
-}
-
-.match-container{
-
-    display: flex;
-    flex-direction: row;
-    align-content: center;
-    justify-content: center;
-
-}
-
-.team-logo {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    object-fit: cover;
-}
-
-.match-score {
-    font-size: 18px;
-    font-weight: 400;
-    color: var(--text);
-    padding: 0 1rem;
-    margin-top: 20px;
-}
-
-.team-name {
-    font-size: 16px;
-    font-weight: 400;
-    color: var(--text);
-    text-align: center;
-}
-
-.match-line {
-    border-top: 1px solid var(--Lineas-555555);
-    margin: 1rem 0;
-}
-
-/* Player Cards */
-.players-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 2rem;
-}
-
-.player-card {
-    background: var(--card-bg);
-    border: 2px solid var(--line);
-    border-radius: 20px;
-    overflow: hidden;
-    text-align: center;
-    padding: 1rem;
-}
-
-.player-card-badge {
-    width: 90%;
-    height: 10px;
-    margin-bottom: 1rem;
-}
-
-.player-image {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-    border-radius: 15px;
-    margin: 0 auto 0.5rem;
-    display: block;
-}
-
-.player-name {
-    font-size: 14px;
-    font-weight: 400;
-    color: var(--text);
-    margin-bottom: 0.25rem;
-}
-
 .player-position {
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 500;
-    color: var(--text);
+    color: var(--sub);
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
-    header {
-        flex-direction: column;
-        gap: 1rem;
-    }
-
-    .header-icons {
-        width: 100%;
-        justify-content: space-between;
-    }
-
     .container {
-        padding: 1rem;
+        padding: 2rem 1rem;
     }
 
     .hero-container {
         flex-direction: column;
+        padding: 0 20px;
+        text-align: center;
     }
 
     .mvp-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 1.5rem;
+        grid-template-columns: 1fr;
         max-width: 400px;
     }
     
-    .matches-grid,
+    .matches-grid {
+        grid-template-columns: 1fr;
+    }
+
     .players-grid {
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-        gap: 1rem;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 1.25rem;
     }
 
     .stats-grid {
         grid-template-columns: repeat(2, 1fr);
-        gap: 1rem;
-    }
-
-    .info-grid {
-        grid-template-columns: 1fr;
-        gap: 1rem;
     }
 }
 
 @media (max-width: 480px) {
-    .header-title {
-        font-size: 20px;
+    .hero-content h1 {
+        font-size: 28px;
     }
 
     .section-heading {
-        font-size: 18px;
+        font-size: 22px;
+        text-align: center;
     }
 
-    .mvp-grid {
-        grid-template-columns: 1fr;
-        max-width: 100%;
-    }
-    
-    .matches-grid,
     .players-grid {
         grid-template-columns: 1fr;
+        max-width: 300px;
+        margin-left: auto;
+        margin-right: auto;
     }
 
     .stats-grid {
         grid-template-columns: 1fr;
     }
-
-    .match-teams {
-        gap: 0.5rem;
+    
+    .match-container {
+        flex-direction: column;
+        gap: 1.5rem;
     }
-}
-
-/* Floating Theme Toggle Button */
-#floating-theme-btn {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    border: none;
-    background: var(--btn);
-    color: white;
-    font-size: 20px;
-    cursor: pointer;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    transition: all 0.3s ease;
-    z-index: 1000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-#floating-theme-btn:hover {
-    transform: scale(1.1);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
-}
-
-#floating-theme-btn:active {
-    transform: scale(0.95);
+    
+    .match-score {
+        margin: 10px 0;
+    }
 }
