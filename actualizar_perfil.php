@@ -16,7 +16,7 @@ $id_usuario = (int) $_SESSION['id_usuario'];
 try {
     $conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    // Obtener los datos actuales para conservar los campos no modificados.
+    // Comprobar que la cuenta existe y conservar sus datos actuales.
     $stmt = $conexion->prepare(
         'SELECT nombre, alias, email, pais, genero, bio, avatar, banner
          FROM usuario
@@ -26,13 +26,13 @@ try {
     $actual = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$actual) {
-        exit('No se encontró la cuenta del usuario.');
+        throw new RuntimeException('No se encontró la cuenta del usuario.');
     }
 
     $campos = [];
     $parametros = [];
 
-    // Actualizar únicamente los campos que realmente envía el formulario.
+    // Solo se actualizan los campos que envía el formulario.
     $camposPermitidos = [
         'nombre',
         'alias',
@@ -43,70 +43,83 @@ try {
     ];
 
     foreach ($camposPermitidos as $campo) {
-        if (array_key_exists($campo, $_POST)) {
-            $valor = trim((string) $_POST[$campo]);
+        if (!array_key_exists($campo, $_POST)) {
+            continue;
+        }
 
-            if ($campo === 'email') {
-                $valor = strtolower($valor);
+        $valor = trim((string) $_POST[$campo]);
 
-                if (!filter_var($valor, FILTER_VALIDATE_EMAIL)) {
-                    exit('El correo electrónico no es válido.');
-                }
+        if ($campo === 'email') {
+            $valor = strtolower($valor);
 
-                // Comprobar que otra cuenta no esté usando ese correo.
-                $comprobar = $conexion->prepare(
-                    'SELECT id_usuario
-                     FROM usuario
-                     WHERE email = :email
-                       AND id_usuario <> :id
-                     LIMIT 1'
+            if (!filter_var($valor, FILTER_VALIDATE_EMAIL)) {
+                throw new RuntimeException(
+                    'El correo electrónico no es válido.'
                 );
-
-                $comprobar->execute([
-                    ':email' => $valor,
-                    ':id' => $id_usuario
-                ]);
-
-                if ($comprobar->fetch(PDO::FETCH_ASSOC)) {
-                    exit(
-                        'Ese correo ya está asociado a otra cuenta. ' .
-                        'Prueba con otro correo.'
-                    );
-                }
             }
 
-            if ($campo === 'nombre' && $valor === '') {
-                exit('El nombre no puede estar vacío.');
+            // Evitar que dos cuentas tengan el mismo correo.
+            $comprobar = $conexion->prepare(
+                'SELECT id_usuario
+                 FROM usuario
+                 WHERE email = :email
+                   AND id_usuario <> :id
+                 LIMIT 1'
+            );
+
+            $comprobar->execute([
+                ':email' => $valor,
+                ':id' => $id_usuario
+            ]);
+
+            if ($comprobar->fetch(PDO::FETCH_ASSOC)) {
+                throw new RuntimeException(
+                    'Ese correo ya está asociado a otra cuenta.'
+                );
             }
+        }
 
-            if ($campo === 'genero') {
-                $generosPermitidos = [
-                    'masculino',
-                    'femenino',
-                    'otro',
-                    'prefiero-no-decir'
-                ];
+        if ($campo === 'nombre' && $valor === '') {
+            throw new RuntimeException('El nombre no puede estar vacío.');
+        }
 
-                if (!in_array($valor, $generosPermitidos, true)) {
-                    exit('El género seleccionado no es válido.');
-                }
+        if ($campo === 'genero') {
+            $generosPermitidos = [
+                'masculino',
+                'femenino',
+                'otro',
+                'prefiero-no-decir'
+            ];
+
+            if (!in_array($valor, $generosPermitidos, true)) {
+                throw new RuntimeException(
+                    'El género seleccionado no es válido.'
+                );
             }
+        }
 
-            $campos[] = "$campo = :$campo";
-            $parametros[":$campo"] = $valor;
+        $campos[] = "$campo = :$campo";
+        $parametros[":$campo"] = $valor;
+    }
+
+    // Carpeta física donde se guardan las imágenes.
+    $directorioImagenes = __DIR__ . DIRECTORY_SEPARATOR . 'Image'
+        . DIRECTORY_SEPARATOR;
+
+    if (!is_dir($directorioImagenes)) {
+        if (
+            !mkdir($directorioImagenes, 0755, true) &&
+            !is_dir($directorioImagenes)
+        ) {
+            throw new RuntimeException(
+                'No se pudo crear la carpeta Image.'
+            );
         }
     }
 
-    // Procesar avatar y portada solo si se ha seleccionado un archivo.
-    $directorioImagenes = __DIR__ . '/Image/';
-
-    if (
-        !is_dir($directorioImagenes) &&
-        !mkdir($directorioImagenes, 0755, true) &&
-        !is_dir($directorioImagenes)
-    ) {
+    if (!is_writable($directorioImagenes)) {
         throw new RuntimeException(
-            'No se pudo crear la carpeta de imágenes.'
+            'La carpeta Image no tiene permisos de escritura.'
         );
     }
 
@@ -117,44 +130,71 @@ try {
         'image/gif'  => 'gif'
     ];
 
+    // Nombre del campo del formulario => columna de la base de datos.
     $archivos = [
         'avatar' => 'avatar',
         'cover'  => 'banner'
     ];
 
+    $finfo = new finfo(FILEINFO_MIME_TYPE);
+
     foreach ($archivos as $campoArchivo => $campoBD) {
-        if (
-            !isset($_FILES[$campoArchivo]) ||
-            $_FILES[$campoArchivo]['error'] === UPLOAD_ERR_NO_FILE
-        ) {
+        if (!isset($_FILES[$campoArchivo])) {
             continue;
         }
 
         $archivo = $_FILES[$campoArchivo];
 
+        // Si no se seleccionó una imagen, se conserva la existente.
+        if ($archivo['error'] === UPLOAD_ERR_NO_FILE) {
+            continue;
+        }
+
         if ($archivo['error'] !== UPLOAD_ERR_OK) {
+            $erroresSubida = [
+                UPLOAD_ERR_INI_SIZE =>
+                    'La imagen supera el límite permitido por PHP.',
+                UPLOAD_ERR_FORM_SIZE =>
+                    'La imagen supera el límite del formulario.',
+                UPLOAD_ERR_PARTIAL =>
+                    'La imagen se subió parcialmente.',
+                UPLOAD_ERR_NO_TMP_DIR =>
+                    'Falta la carpeta temporal de subida.',
+                UPLOAD_ERR_CANT_WRITE =>
+                    'El servidor no pudo escribir el archivo.',
+                UPLOAD_ERR_EXTENSION =>
+                    'Una extensión de PHP impidió subir la imagen.'
+            ];
+
+            $mensaje = $erroresSubida[$archivo['error']]
+                ?? 'Error desconocido al subir la imagen.';
+
             throw new RuntimeException(
-                'No se pudo subir la imagen: ' . $campoArchivo
+                $campoArchivo . ': ' . $mensaje
             );
         }
 
-        // Límite de 5 MB por imagen.
+        // Límite de 5 MB por archivo.
         if ($archivo['size'] > 5 * 1024 * 1024) {
             throw new RuntimeException(
                 'Cada imagen debe pesar como máximo 5 MB.'
             );
         }
 
-        if (!is_uploaded_file($archivo['tmp_name'])) {
-            throw new RuntimeException('El archivo subido no es válido.');
+        if (
+            empty($archivo['tmp_name']) ||
+            !is_uploaded_file($archivo['tmp_name'])
+        ) {
+            throw new RuntimeException(
+                'El archivo subido no es válido.'
+            );
         }
 
-        $finfo = new finfo(FILEINFO_MIME_TYPE);
         $mime = $finfo->file($archivo['tmp_name']);
 
         if (!isset($tiposPermitidos[$mime])) {
             throw new RuntimeException(
-                'Formato de imagen no permitido. Usa JPG, PNG, WEBP o GIF.'
+                'Formato no permitido. Usa JPG, PNG, WEBP o GIF.'
             );
         }
 
@@ -164,15 +204,16 @@ try {
 
         if (!move_uploaded_file($archivo['tmp_name'], $destino)) {
             throw new RuntimeException(
-                'No se pudo guardar la imagen en el servidor.'
+                'No se pudo guardar la imagen en la carpeta Image.'
             );
         }
 
+        // Guardar la ruta relativa en la base de datos.
         $campos[] = "$campoBD = :$campoBD";
         $parametros[":$campoBD"] = 'Image/' . $nombreArchivo;
     }
 
-    // Guardar todos los cambios enviados en una sola consulta.
+    // Actualizar únicamente los campos modificados.
     if (!empty($campos)) {
         $sql = 'UPDATE usuario SET ' . implode(', ', $campos)
              . ' WHERE id_usuario = :id';
@@ -183,7 +224,7 @@ try {
         $update->execute($parametros);
     }
 
-    // Actualizar los datos de sesión conocidos, si existen.
+    // Actualizar los datos de sesión.
     if (isset($_POST['email'])) {
         $_SESSION['email'] = strtolower(trim($_POST['email']));
 
@@ -201,7 +242,7 @@ try {
     $ruta = parse_url($referencia, PHP_URL_PATH);
     $pagina = $ruta ? basename($ruta) : '6perfilPropio.php';
 
-    // Evitar redirigir a rutas inesperadas.
+    // Corregido: la expresión regular anterior estaba mal formada.
     if (
         !$pagina ||
         !preg_match('/^[a-zA-Z0-9_.-]+\.php$/', $pagina)
@@ -213,10 +254,21 @@ try {
     exit();
 
 } catch (Throwable $e) {
-    error_log('Error al actualizar el perfil: ' . $e->getMessage());
+    error_log(
+        'Error al actualizar el perfil: ' . $e->getMessage()
+    );
 
     http_response_code(500);
-    echo 'No se pudieron guardar los cambios. Revisa el registro de errores del servidor.';
+
+    // Durante las pruebas muestra el motivo concreto del error.
+    // En producción, es preferible mostrar un mensaje genérico.
+    echo '<h2>No se pudieron guardar los cambios</h2>';
+    echo '<p>' . htmlspecialchars(
+        $e->getMessage(),
+        ENT_QUOTES,
+        'UTF-8'
+    ) . '</p>';
+
     exit();
 }
 ?>

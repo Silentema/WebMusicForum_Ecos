@@ -12,8 +12,8 @@ CREATE TABLE usuario (
     genero VARCHAR(50),
     alias VARCHAR(100) NULL,
     pais VARCHAR(100) NULL,
-    foto_perfil_url VARCHAR(255) NULL,
-    foto_portada_url VARCHAR(255) NULL,
+    avatar VARCHAR(255) NULL,
+    banner VARCHAR(255) NULL,
     id_usuario INT PRIMARY KEY,
     FOREIGN KEY (id_rol) REFERENCES rol(id_rol)
 );
@@ -82,3 +82,12 @@ CREATE TABLE publicacion_hashtag (
     FOREIGN KEY (id_publicacion) REFERENCES publicacion(id_publicacion),
     FOREIGN KEY (id_hashtag) REFERENCES hashtag(id_hashtag)
 );
+
+///////////////////////////////////////////////////////////////////////////
+
+INSERT INTO rol (id_rol, nombre) VALUES 
+(1, 'Usuario'),
+(2, 'Administrador');
+
+ALTER TABLE usuario
+ADD COLUMN bio TEXT NULL;
