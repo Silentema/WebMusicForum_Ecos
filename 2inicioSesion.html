@@ -31,7 +31,7 @@
 
     <h1 class="title">Inicio de sesión</h1>
 
-    <form class="needs-validation" novalidate>
+    <form action="login.php" method="POST" class="needs-validation" novalidate>
 
       <label for="tipoDeCuenta" class="form-label">Tipo de Cuenta</label>
       <select name="tipoDeCuenta" id="tipoDeCuenta" class="form-select" required>
@@ -40,9 +40,10 @@
         <option value="admin">Administrador</option>
       </select>
 
-      <input type="text" placeholder="Nombre" class="form-control" required>
-      <div class="invalid-feedback">Ingresa tu nombre.</div>
-      <input type="password" placeholder="Contraseña" class="form-control" required>
+      <input type="email" name="correo" placeholder="Correo" class="form-control" required>
+      <div class="invalid-feedback">Ingresa tu correo.</div>
+
+      <input type="password" name="contrasena" placeholder="Contraseña" class="form-control" required>
       <div class="invalid-feedback">Ingresa tu contraseña.</div>
 
       <p class="olvidoContra">¿Olvidaste la contraseña?</p>
@@ -81,18 +82,16 @@
           event.preventDefault()
           event.stopPropagation()
 
-        } else {
-          localStorage.setItem('isLoggedIn', 'true');
+          } else {
+          // Guardamos el rol en local, pero dejamos que PHP procese el inicio de sesión
           var tipo = document.getElementById('tipoDeCuenta').value;
           if (tipo === 'admin') {
             localStorage.setItem('rol', 'admin');
           } else if (tipo === 'user') {
             localStorage.setItem('rol', 'user');
           } else {
-            localStorage.removeItem('rol'); // Si no se selecciona nada, limpia el rol
+            localStorage.removeItem('rol');
           }
-          window.location.href = '3main.html';
-          event.preventDefault(); 
         }
 
         form.classList.add('was-validated')

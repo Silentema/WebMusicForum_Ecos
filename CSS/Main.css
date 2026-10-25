@@ -1799,3 +1799,42 @@ body.dark-theme .carrusel > a:hover {
     width: 100%;
     height: 300px;
 }
+
+/*Crear Publicación (Fab Button)*/
+.fab-button {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: #000000;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: none;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+    z-index: 1000;
+}
+
+.fab-button:hover {
+    transform: scale(1.1);
+}
+
+.fab-icon {
+    width: 30px;
+    height: 30px;
+    fill: #FFFFFF;
+    transition: fill 0.3s ease;
+}
+
+body.dark-theme .fab-button {
+    background: #ffffff;
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);
+}
+
+body.dark-theme .fab-icon {
+    fill: #000000;
+}

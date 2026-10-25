@@ -154,23 +154,17 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 (function() {
-    var isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
     var userLink = document.getElementById('user-link');
     var userIcon = document.getElementById('user-icon');
-    if (isLoggedIn) {
-        userLink.href = '6perfilPropio.html';
-        userIcon.src = 'Image/mujerGris.jpg'; // Imagen de perfil
+    
+    if (userLink) {
+        userLink.href = '6perfilPropio.php';
+        var savedAvatar = localStorage.getItem('userAvatar');
+        userIcon.src = savedAvatar ? savedAvatar : 'Image/sinavatar.jpg'; 
         userIcon.alt = 'Perfil';
         userIcon.style.borderRadius = '50%';
         userIcon.style.width = '38px';
         userIcon.style.height = '38px';
-    } else {
-        userLink.href = '2inicioSesion.html';
-        userIcon.src = 'Image/cuenta.png';
-        userIcon.alt = 'Cuenta';
-        userIcon.style.borderRadius = '';
-        userIcon.style.width = '';
-        userIcon.style.height = '';
     }
 })();
 </script>

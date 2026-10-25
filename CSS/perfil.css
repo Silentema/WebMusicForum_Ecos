@@ -252,3 +252,58 @@
         cursor: pointer;
         padding: 0;
       }
+
+      /* Contenedor general del perfil */
+      .page {
+          padding: 24px 0 60px;
+      }
+
+      .cover-wrap {
+          max-width: 1047px;
+          margin: 8px auto 0;
+          position: relative;
+      }
+
+      .cover {
+          width: 100%;
+          aspect-ratio: 1047 / 205;
+          border-radius: 43px;
+          object-fit: cover;
+          display: block;
+      }
+
+      .avatar {
+          position: absolute;
+          left: 38px;
+          bottom: -58px;
+          width: 132px;
+          height: 132px;
+          border-radius: 999px;
+          border: 3px solid var(--card-bg);
+          object-fit: cover;
+      }
+
+      /* Fila de información del usuario */
+      .profile-row {
+          max-width: 1047px;
+          margin: 75px auto 0;
+          display: flex;
+          flex-wrap: wrap;
+          gap: 24px;
+          align-items: flex-start;
+          justify-content: space-between;
+          padding: 0 8px;
+      }
+
+      .user-left {
+          min-width: 260px;
+          margin-left: 40px;
+          flex: 1;
+      }
+
+      /* Feed de publicaciones en el perfil limpio */
+      .feed {
+          max-width: 822px;
+          margin: 0 auto;
+          padding: 0 8px;
+      }

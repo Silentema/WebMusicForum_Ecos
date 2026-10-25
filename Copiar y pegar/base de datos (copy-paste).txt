@@ -1,0 +1,84 @@
+CREATE TABLE rol (
+    id_rol INT PRIMARY KEY,
+    nombre VARCHAR(100)
+);
+
+CREATE TABLE usuario (
+    id_rol INT,
+    nombre VARCHAR(100),
+    email VARCHAR(100),
+    contraseña_hash VARCHAR(100),
+    fecha_nacimiento DATE,
+    genero VARCHAR(50),
+    alias VARCHAR(100) NULL,
+    pais VARCHAR(100) NULL,
+    foto_perfil_url VARCHAR(255) NULL,
+    foto_portada_url VARCHAR(255) NULL,
+    id_usuario INT PRIMARY KEY,
+    FOREIGN KEY (id_rol) REFERENCES rol(id_rol)
+);
+
+CREATE TABLE cancion (
+    id_cancion INT PRIMARY KEY,
+    id_artista INT,
+    titulo VARCHAR(100),
+    duracion TIME,
+    archivo_url VARCHAR(100),
+    FOREIGN KEY (id_artista) REFERENCES usuario(id_usuario)
+);
+
+CREATE TABLE publicacion (
+    id_publicacion INT PRIMARY KEY,
+    id_usuario INT,
+    texto TEXT,
+    fecha_creacion DATE,
+    FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario)
+);
+
+CREATE TABLE comentario (
+    id_comentario INT PRIMARY KEY,
+    id_publicacion INT,
+    id_usuario INT,
+    contenido TEXT,
+    fecha_creacion DATE,
+    FOREIGN KEY (id_publicacion) REFERENCES publicacion(id_publicacion),
+    FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario)
+);
+
+CREATE TABLE reaccion (
+    id_reaccion INT PRIMARY KEY,
+    id_publicacion INT,
+    id_usuario INT,
+    FOREIGN KEY (id_publicacion) REFERENCES publicacion(id_publicacion),
+    FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario)
+);
+
+CREATE TABLE relacion_usuario (
+    id_relacion INT PRIMARY KEY,
+    id_usuario_origen INT,
+    id_usuario_destino INT,
+    tipo_relacion VARCHAR(50),
+    FOREIGN KEY (id_usuario_origen) REFERENCES usuario(id_usuario),
+    FOREIGN KEY (id_usuario_destino) REFERENCES usuario(id_usuario)
+);
+
+CREATE TABLE recomendacion_carrusel (
+    id_recomendacion INT PRIMARY KEY,
+    titulo VARCHAR(150),
+    tipo VARCHAR(50), 
+    imagen_url VARCHAR(255),
+    enlace_url VARCHAR(255)
+);
+
+CREATE TABLE hashtag (
+    id_hashtag INT PRIMARY KEY,
+    nombre VARCHAR(100)
+);
+
+CREATE TABLE publicacion_hashtag (
+    id_pub_hash INT PRIMARY KEY,
+    id_publicacion INT,
+    id_hashtag INT,
+    FOREIGN KEY (id_publicacion) REFERENCES publicacion(id_publicacion),
+    FOREIGN KEY (id_hashtag) REFERENCES hashtag(id_hashtag)
+);
