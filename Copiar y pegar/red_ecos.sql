@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3307
--- Tiempo de generación: 25-10-2026 a las 21:32:01
+-- Tiempo de generación: 25-10-2026 a las 22:20:47
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -179,7 +179,8 @@ CREATE TABLE `usuario` (
 --
 
 INSERT INTO `usuario` (`id_rol`, `nombre`, `email`, `contraseña_hash`, `fecha_nacimiento`, `genero`, `alias`, `pais`, `avatar`, `banner`, `id_usuario`, `bio`) VALUES
-(1, 'Robert Pendleton', 'robert@gmail.com', '$2y$10$C4vCEo4I0l1.7/YUhmKR.ORXcl9224FHsMBhGOv/x6PBzA7c4fRX6', '1900-05-09', 'masculino', '@robertpendleton188X', 'Londres', 'Image/25a9a61a55b9902c7c233a1baf6a6917.png', 'Image/ce051ff10af3b898d1dd47887fd7be97.png', 0, 'Me gustan los gatos');
+(1, 'Robert Pendleton', 'robert@gmail.com', '$2y$10$C4vCEo4I0l1.7/YUhmKR.ORXcl9224FHsMBhGOv/x6PBzA7c4fRX6', '1900-05-09', 'masculino', '@robertpendleton188X', 'Londres', 'Image/25a9a61a55b9902c7c233a1baf6a6917.png', 'Image/ce051ff10af3b898d1dd47887fd7be97.png', 1, 'Me gustan los gatos'),
+(1, 'Rose Baird', 'rose@gmail.com', '$2y$10$Ni3lRp4vRBGlQdm5RWMBeO9rSx1ijqyITXN5g54BmETaOsejpPK9.', '2005-05-09', 'femenino', NULL, NULL, NULL, NULL, 2, '');
 
 --
 -- Índices para tablas volcadas
@@ -255,6 +256,16 @@ ALTER TABLE `rol`
 ALTER TABLE `usuario`
   ADD PRIMARY KEY (`id_usuario`),
   ADD KEY `id_rol` (`id_rol`);
+
+--
+-- AUTO_INCREMENT de las tablas volcadas
+--
+
+--
+-- AUTO_INCREMENT de la tabla `usuario`
+--
+ALTER TABLE `usuario`
+  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Restricciones para tablas volcadas
