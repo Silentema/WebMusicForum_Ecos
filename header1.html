@@ -25,8 +25,8 @@
         <button onclick="toggleSearch()" style="background: none; border: none; cursor: pointer; display: flex; align-items: center; padding: 0;">
         <img class = "lupa" src = "Image/lupa.png" alt = "Lupa">
         </button>
-        <a id="user-link" href="2inicioSesion.html" style="display: flex; align-items: center;">
-        <img id="user-icon" class="lupa" src = "Image/cuenta.png"  alt="Cuenta">
+        <a id="user-link" href="6perfilPropio.php" style="display: flex; align-items: center;">
+        <img id="user-icon" class="lupa" src="avatar_actual.php" alt="Perfil">
         </a>
     </div>
 
@@ -154,19 +154,12 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 (function() {
-    var userLink = document.getElementById('user-link');
     var userIcon = document.getElementById('user-icon');
-    
-    if (userLink) {
-        userLink.href = '6perfilPropio.php';
-        var savedAvatar = localStorage.getItem('userAvatar');
-        userIcon.src = savedAvatar ? savedAvatar : 'Image/sinavatar.jpg'; 
-        userIcon.alt = 'Perfil';
+
+    if (userIcon) {
         userIcon.style.borderRadius = '50%';
         userIcon.style.width = '38px';
         userIcon.style.height = '38px';
     }
 })();
 </script>
-
-

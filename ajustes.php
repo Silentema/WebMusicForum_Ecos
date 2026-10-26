@@ -1,4 +1,6 @@
 <?php
+require_once 'error_popup.php';
+
 //Se reanuda la sesión para poder leer los datos del usuario que inició sesión
 session_start();
 
@@ -7,6 +9,9 @@ if (!isset($_SESSION['id_usuario'])) {
     header("Location: 2inicioSesion.html");
     exit();
 }
+
+$passwordActualizada = !empty($_SESSION['password_actualizada']);
+unset($_SESSION['password_actualizada']);
 
 //Traemos la conexión a la base de datos
 require 'conexion.php';
@@ -23,7 +28,11 @@ try {
     $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
 } catch (PDOException $e) {
-    exit("Error al cargar los datos: " . $e->getMessage());
+    error_log($e->getMessage());
+    mostrarPopupError(
+        "Error al cargar los datos: " . $e->getMessage(),
+        '3main.html'
+    );
 }
 ?>
 <!doctype html>
@@ -302,19 +311,19 @@ try {
             <div class="panel superpuesto" id="forgot-pass">
               <div class="change-password-form-container">
                 <h1 class="change-password-page-title">Cambiar contraseña</h1>
-                <form>
+                <form action="actualizar_perfil.php" method="POST">
                   <div class="change-password-form-group">
                     <label for="current-password" class="change-password-form-label">Contraseña actual</label>
-                    <input type="password" id="current-password" class="change-password-form-input" placeholder="Ingresa tu contraseña" />
+                    <input type="password" id="current-password" name="current_password" class="change-password-form-input" placeholder="Ingresa tu contraseña" required />
                     <a href="#" class="change-password-forgot-password">¿Olvidó su contraseña?</a>
                   </div>
                   <div class="change-password-form-group">
                     <label for="new-password" class="change-password-form-label">Nueva contraseña</label>
-                    <input type="password" id="new-password" class="change-password-form-input" placeholder="Contraseña nueva" />
+                    <input type="password" id="new-password" name="new_password" class="change-password-form-input" placeholder="Contraseña nueva" required />
                   </div>
                   <div class="change-password-form-group">
                     <label for="confirm-password" class="change-password-form-label">Confirme la nueva contraseña</label>
-                    <input type="password" id="confirm-password" class="change-password-form-input" placeholder="Confirmación" />
+                    <input type="password" id="confirm-password" name="confirm_password" class="change-password-form-input" placeholder="Confirmación" required />
                   </div>
                   <div class="change-password-button-group">
                     <button type="submit" class="change-password-btn change-password-btn-confirm">Confirmar</button>
@@ -402,5 +411,8 @@ try {
         }
       }
     </script>
+    <?php if ($passwordActualizada): ?>
+      <script>alert('Tu contraseña se actualizó correctamente.');</script>
+    <?php endif; ?>
   </body>
 </html>

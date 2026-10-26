@@ -1,6 +1,7 @@
 
 <?php
 session_start();
+require_once 'error_popup.php';
 require_once 'conexion.php';
 
 if (
@@ -12,13 +13,25 @@ if (
 }
 
 $id_usuario = (int) $_SESSION['id_usuario'];
+$passwordModificada = false;
+$referencia = $_SERVER['HTTP_REFERER'] ?? '';
+$ruta = parse_url($referencia, PHP_URL_PATH);
+$pagina = $ruta ? basename($ruta) : '6perfilPropio.php';
+
+if (
+    !$pagina ||
+    !preg_match('/^[a-zA-Z0-9_.-]+\.php$/', $pagina)
+) {
+    $pagina = '6perfilPropio.php';
+}
 
 try {
     $conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     // Comprobar que la cuenta existe y conservar sus datos actuales.
     $stmt = $conexion->prepare(
-        'SELECT nombre, alias, email, pais, genero, bio, avatar, banner
+        'SELECT nombre, alias, email, pais, genero, bio, avatar, banner,
+                contraseña_hash
          FROM usuario
          WHERE id_usuario = :id'
     );
@@ -100,6 +113,59 @@ try {
 
         $campos[] = "$campo = :$campo";
         $parametros[":$campo"] = $valor;
+    }
+
+    $camposPassword = [
+        'current_password',
+        'new_password',
+        'confirm_password'
+    ];
+    $passwordEnviado = false;
+
+    foreach ($camposPassword as $campo) {
+        if (array_key_exists($campo, $_POST)) {
+            $passwordEnviado = true;
+            break;
+        }
+    }
+
+    if ($passwordEnviado) {
+        foreach ($camposPassword as $campo) {
+            if (
+                !isset($_POST[$campo]) ||
+                !is_string($_POST[$campo]) ||
+                $_POST[$campo] === ''
+            ) {
+                throw new RuntimeException(
+                    'Completa los tres campos para cambiar la contraseña.'
+                );
+            }
+        }
+
+        if (
+            empty($actual['contraseña_hash']) ||
+            !password_verify(
+                $_POST['current_password'],
+                $actual['contraseña_hash']
+            )
+        ) {
+            throw new RuntimeException(
+                'La contraseña actual es incorrecta.'
+            );
+        }
+
+        if ($_POST['new_password'] !== $_POST['confirm_password']) {
+            throw new RuntimeException(
+                'La nueva contraseña y su confirmación no coinciden.'
+            );
+        }
+
+        $campos[] = 'contraseña_hash = :password_hash';
+        $parametros[':password_hash'] = password_hash(
+            $_POST['new_password'],
+            PASSWORD_DEFAULT
+        );
+        $passwordModificada = true;
     }
 
     // Carpeta física donde se guardan las imágenes.
@@ -224,6 +290,10 @@ try {
         $update->execute($parametros);
     }
 
+    if ($passwordModificada) {
+        $_SESSION['password_actualizada'] = true;
+    }
+
     // Actualizar los datos de sesión.
     if (isset($_POST['email'])) {
         $_SESSION['email'] = strtolower(trim($_POST['email']));
@@ -237,20 +307,9 @@ try {
         $_SESSION['nombre'] = trim($_POST['nombre']);
     }
 
-    // Volver a la página desde la que se envió el formulario.
-    $referencia = $_SERVER['HTTP_REFERER'] ?? '';
-    $ruta = parse_url($referencia, PHP_URL_PATH);
-    $pagina = $ruta ? basename($ruta) : '6perfilPropio.php';
-
-    // Corregido: la expresión regular anterior estaba mal formada.
-    if (
-        !$pagina ||
-        !preg_match('/^[a-zA-Z0-9_.-]+\.php$/', $pagina)
-    ) {
-        $pagina = '6perfilPropio.php';
-    }
-
-    header('Location: ' . $pagina);
+    header(
+        'Location: ' . ($passwordModificada ? 'ajustes.php' : $pagina)
+    );
     exit();
 
 } catch (Throwable $e) {
@@ -259,16 +318,13 @@ try {
     );
 
     http_response_code(500);
+    $destinoError = $e instanceof PDOException
+        ? '3main.html'
+        : $pagina;
 
-    // Durante las pruebas muestra el motivo concreto del error.
-    // En producción, es preferible mostrar un mensaje genérico.
-    echo '<h2>No se pudieron guardar los cambios</h2>';
-    echo '<p>' . htmlspecialchars(
-        $e->getMessage(),
-        ENT_QUOTES,
-        'UTF-8'
-    ) . '</p>';
-
-    exit();
+    mostrarPopupError(
+        "No se pudieron guardar los cambios: " . $e->getMessage(),
+        $destinoError
+    );
 }
 ?>

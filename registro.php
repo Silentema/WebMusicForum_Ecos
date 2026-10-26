@@ -1,4 +1,5 @@
 <?php
+require_once 'error_popup.php';
 require 'conexion.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -32,7 +33,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit();
 
     } catch (PDOException $e) {
-        exit("Error al registrar: " . $e->getMessage());
+        error_log($e->getMessage());
+        mostrarPopupError(
+            "Error al registrar: " . $e->getMessage(),
+            'index.html'
+        );
     }
 }
 ?>

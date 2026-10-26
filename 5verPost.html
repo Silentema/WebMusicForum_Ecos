@@ -156,7 +156,7 @@
 
            <div class="temp-comment-container">
             <div class="temp-comment-header">
-                <img class="temp-avatar" src="https://api.builder.io/api/v1/image/assets/TEMP/88690893998caa9748d3f1acc44df544d8cd79ed?width=100" alt="Avatar de usuario">
+                <img class="temp-avatar" src="Image/cuenta.png" alt="Avatar de usuario">
                 <textarea class="temp-comment-input-label" placeholder="Comenta algo" rows="2" style="resize:vertical; min-height:32px; width:100%; font-size:20px; border:none; background:transparent; outline:none; color:var(--color-subtext); font-family:inherit; font-weight:500;"></textarea>
             </div>
 
@@ -370,6 +370,28 @@
 
     document.addEventListener('DOMContentLoaded', function() {
         expandirCommentCards();
+
+        const commentAvatar = document.querySelector('.temp-avatar');
+        if (commentAvatar) {
+            fetch('header_usuario.php', { credentials: 'same-origin' })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('No se pudo cargar el avatar del usuario activo.');
+                    }
+                    return response.json();
+                })
+                .then(user => {
+                    if (user.authenticated && user.avatar) {
+                        commentAvatar.src = user.avatar;
+                        commentAvatar.alt = user.nombre
+                            ? `Avatar de ${user.nombre}`
+                            : 'Avatar de usuario';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error al cargar el avatar del comentario:', error);
+                });
+        }
 
         const commentActions = document.querySelectorAll('.comment-actions');
         commentActions.forEach(actions => {

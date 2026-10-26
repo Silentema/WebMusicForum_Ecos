@@ -1,4 +1,6 @@
 <?php
+require_once 'error_popup.php';
+
 session_start();
 
 if (!isset($_SESSION['id_usuario'])) {
@@ -16,7 +18,11 @@ try {
     $stmt->execute();
     $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
-    exit("Error al cargar el perfil: " . $e->getMessage());
+    error_log($e->getMessage());
+    mostrarPopupError(
+        "Error al cargar el perfil: " . $e->getMessage(),
+        '3main.html'
+    );
 }
 ?>
 <!doctype html>

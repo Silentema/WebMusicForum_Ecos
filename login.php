@@ -1,6 +1,7 @@
 <?php
 //Memoria digital para guardar datos de un usuario mientras navega en la página
 session_start();
+require_once 'error_popup.php';
 require 'conexion.php';
 
 //Verificación de los datos mediante el html
@@ -33,11 +34,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             
         } else {
             // Si no coincide, le decimos que las credenciales son incorrectas
-            echo "Credenciales incorrectas. Verifica tu correo y contraseña.";
+            mostrarPopupError(
+                "Credenciales incorrectas. Verifica tu correo y contraseña.",
+                '2inicioSesion.html'
+            );
         }
 
     } catch (PDOException $e) {
-        exit("Error en el login: " . $e->getMessage());
+        error_log($e->getMessage());
+        mostrarPopupError(
+            "Error en el login: " . $e->getMessage(),
+            '2inicioSesion.html'
+        );
     }
 }
 ?>
