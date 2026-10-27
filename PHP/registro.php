@@ -1,6 +1,6 @@
 <?php
-require_once 'error_popup.php';
-require 'conexion.php';
+require_once __DIR__ . '/error_popup.php';
+require __DIR__ . '/conexion.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
@@ -29,7 +29,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         $stmt->execute();
 
-        header("Location: 2inicioSesion.html");
+        header("Location: ../2inicioSesion.html");
         exit();
 
     } catch (PDOException $e) {

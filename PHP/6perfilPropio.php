@@ -1,14 +1,14 @@
 <?php
-require_once 'error_popup.php';
+require_once __DIR__ . '/error_popup.php';
 
 session_start();
 
 if (!isset($_SESSION['id_usuario'])) {
-    header("Location: 2inicioSesion.html");
+    header("Location: ../2inicioSesion.html");
     exit();
 }
 
-require 'conexion.php';
+require __DIR__ . '/conexion.php';
 
 try {
     $id_usuario = $_SESSION['id_usuario'];
@@ -32,9 +32,9 @@ try {
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>ECOS • Perfil</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Poppins:wght@700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="CSS/Main.css" />
-    <link rel="stylesheet" href="CSS/perfil.css" />
-    <link rel="stylesheet" href="CSS/back-btn.css" />
+    <link rel="stylesheet" href="../CSS/Main.css" />
+    <link rel="stylesheet" href="../CSS/perfil.css" />
+    <link rel="stylesheet" href="../CSS/back-btn.css" />
     <style>
       #abrir-popup.fab-button {
           position: fixed !important;
@@ -143,7 +143,7 @@ try {
   <body style="padding-top:70px;">
 
     <div id="header-container"></div>
-    <script src="headerLoader.js"></script>
+    <script src="../JS/headerLoader.js"></script>
 
     <button class="back-btn" style="margin-top: 70px;" onclick="history.back()">←</button>
 
@@ -151,11 +151,11 @@ try {
       <form action="actualizar_perfil.php" method="POST" enctype="multipart/form-data" id="perfil-form">
         
         <div class="cover-wrap">
-          <img class="cover" src="<?php echo htmlspecialchars(!empty($usuario['banner']) ? $usuario['banner'] : 'Image/sinbanner.png'); ?>" alt="Cover" id="cover-img" style="z-index:1; position:relative;" />
+          <img class="cover" src="../<?php echo htmlspecialchars(!empty($usuario['banner']) ? $usuario['banner'] : 'Image/sinbanner.png'); ?>" alt="Cover" id="cover-img" style="z-index:1; position:relative;" />
           <div class="img-overlay cover-overlay" id="cover-overlay" style="display:none; border-radius:43px; z-index:2; cursor:pointer;"><span class="plus-icon">+</span></div>
           <input type="file" id="cover-file" name="cover" accept="image/*" style="display:none" />
           
-          <img class="avatar" src="<?php echo htmlspecialchars(!empty($usuario['avatar']) ? $usuario['avatar'] : 'Image/sinavatar.jpg'); ?>" alt="Avatar" id="avatar-img" style="z-index:3; position:absolute; left:38px; bottom:-58px;" />
+          <img class="avatar" src="../<?php echo htmlspecialchars(!empty($usuario['avatar']) ? $usuario['avatar'] : 'Image/sinavatar.jpg'); ?>" alt="Avatar" id="avatar-img" style="z-index:3; position:absolute; left:38px; bottom:-58px;" />
           <div class="img-overlay avatar-overlay" id="avatar-overlay" style="display:none; border-radius:999px; left:38px; bottom:-58px; width:132px; height:132px; z-index:4; cursor:pointer;"><span class="plus-icon">+</span></div>
           <input type="file" id="avatar-file" name="avatar" accept="image/*" style="display:none" />
           
@@ -196,7 +196,7 @@ try {
     </div>
 
     <script>
-      localStorage.setItem('userAvatar', '<?php echo htmlspecialchars(!empty($usuario['avatar']) ? $usuario['avatar'] : 'Image/sinavatar.jpg'); ?>');
+      localStorage.setItem('userAvatar', '../<?php echo htmlspecialchars(!empty($usuario['avatar']) ? $usuario['avatar'] : 'Image/sinavatar.jpg'); ?>');
 
       document.addEventListener('DOMContentLoaded', function() {
         var editBtn = document.querySelector('.edit-btn');
@@ -265,7 +265,7 @@ try {
         const abrirPopupBtn = document.getElementById('abrir-popup');
         if (abrirPopupBtn) {
             abrirPopupBtn.addEventListener('click', () => {
-                fetch('crearPublicacion.html')
+                fetch(window.projectUrl('crearPublicacion.html'))
                 .then(res => {
                     if (!res.ok) throw new Error('Archivo no encontrado');
                     return res.text();
@@ -275,6 +275,7 @@ try {
                     const popupOverlay = document.getElementById('popup-overlay');
                     
                     popupContainer.innerHTML = html;
+                    window.resolveProjectPaths(popupContainer);
                     popupOverlay.style.display = 'flex';
                     
                     const closeBtn = popupContainer.querySelector('.close-btn');

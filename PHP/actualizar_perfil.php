@@ -1,14 +1,14 @@
 
 <?php
 session_start();
-require_once 'error_popup.php';
-require_once 'conexion.php';
+require_once __DIR__ . '/error_popup.php';
+require_once __DIR__ . '/conexion.php';
 
 if (
     !isset($_SESSION['id_usuario']) ||
     $_SERVER['REQUEST_METHOD'] !== 'POST'
 ) {
-    header('Location: 2inicioSesion.html');
+    header('Location: ../2inicioSesion.html');
     exit();
 }
 
@@ -169,7 +169,7 @@ try {
     }
 
     // Carpeta física donde se guardan las imágenes.
-    $directorioImagenes = __DIR__ . DIRECTORY_SEPARATOR . 'Image'
+    $directorioImagenes = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'Image'
         . DIRECTORY_SEPARATOR;
 
     if (!is_dir($directorioImagenes)) {

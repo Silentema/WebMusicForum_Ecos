@@ -46,7 +46,7 @@
 <body style="padding-top:70px;">
   
    <div id="header-container"></div>
-    <script src="headerLoader.js"></script>
+    <script src="JS/headerLoader.js"></script>
     <script>
     function applyContrastFromStorage() {
         if (localStorage.getItem('contrastMode') === 'true') {
@@ -373,7 +373,7 @@
 
         const commentAvatar = document.querySelector('.temp-avatar');
         if (commentAvatar) {
-            fetch('header_usuario.php', { credentials: 'same-origin' })
+            fetch('PHP/header_usuario.php', { credentials: 'same-origin' })
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('No se pudo cargar el avatar del usuario activo.');

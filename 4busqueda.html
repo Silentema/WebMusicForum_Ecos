@@ -46,7 +46,7 @@
 <body style="padding-top:70px;">
 
 <div id="header-container"></div>
-        <script src="headerLoader.js"></script>
+        <script src="JS/headerLoader.js"></script>
         <script>
         function applyContrastFromStorage() {
             if (localStorage.getItem('contrastMode') === 'true') {
@@ -521,7 +521,7 @@
                     menuPopupContainer.innerHTML = bodyContent;
                     document.getElementById('menu-popup-overlay').style.display = 'flex';
 
-                    fetch('menu.css')
+                    fetch('CSS/menu.css')
                         .then(res => res.text())
                         .then(css => {
                             const styleElement = document.createElement('style');

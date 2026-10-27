@@ -9,7 +9,7 @@ if (!isset($_SESSION['id_usuario'])) {
 }
 
 define('API_JSON_RESPONSE', true);
-require_once 'conexion.php';
+require_once __DIR__ . '/conexion.php';
 
 try {
     $stmt = $conexion->prepare(
@@ -39,7 +39,7 @@ try {
         $avatar === '' ||
         (
             !preg_match('#^https?://#i', $avatar) &&
-            !is_file(__DIR__ . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $avatar))
+            !is_file(dirname(__DIR__) . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $avatar))
         )
     ) {
         $avatar = 'Image/cuenta.png';

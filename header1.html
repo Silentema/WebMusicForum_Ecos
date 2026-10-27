@@ -25,8 +25,8 @@
         <button onclick="toggleSearch()" style="background: none; border: none; cursor: pointer; display: flex; align-items: center; padding: 0;">
         <img class = "lupa" src = "Image/lupa.png" alt = "Lupa">
         </button>
-        <a id="user-link" href="6perfilPropio.php" style="display: flex; align-items: center;">
-        <img id="user-icon" class="lupa" src="avatar_actual.php" alt="Perfil">
+        <a id="user-link" href="PHP/6perfilPropio.php" style="display: flex; align-items: center;">
+        <img id="user-icon" class="lupa" src="PHP/avatar_actual.php" alt="Perfil">
         </a>
     </div>
 
@@ -45,7 +45,7 @@ function toggleSearch() {
             searchInput.style.display = 'block';
         } else {
             if (searchInput.value.trim() !== '') {
-                window.location.href = '4busqueda.html?q=' + encodeURIComponent(searchInput.value.trim());
+                window.location.href = window.projectUrl('4busqueda.html?q=' + encodeURIComponent(searchInput.value.trim()));
             } else {
                 searchInput.style.display = 'none';
             }
@@ -57,7 +57,7 @@ function handleSearchKeydown(event) {
     if (event.key === 'Enter') {
         const searchInput = document.getElementById('searchInput');
         if (searchInput && searchInput.value.trim() !== '') {
-            window.location.href = '4busqueda.html?q=' + encodeURIComponent(searchInput.value.trim());
+            window.location.href = window.projectUrl('4busqueda.html?q=' + encodeURIComponent(searchInput.value.trim()));
         }
     } else if (event.key === 'Escape') {
         const searchInput = document.getElementById('searchInput');
@@ -79,10 +79,13 @@ window.abrirMenu = function() {
     
     overlay.style.display = 'block';
     
-    fetch('menu.html')
+    fetch(window.projectUrl('menu.html'))
         .then(response => response.text())
         .then(html => {
-            overlay.innerHTML = html;
+            const template = document.createElement('template');
+            template.innerHTML = html;
+            window.resolveProjectPaths(template.content);
+            overlay.replaceChildren(template.content);
             
             const closeBtn = overlay.querySelector('.menu-close-menu');
             if (closeBtn) {

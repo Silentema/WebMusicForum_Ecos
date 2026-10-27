@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Página con Menú</title>
-  <link rel="stylesheet" href="menu.css">
+  <link rel="stylesheet" href="CSS/menu.css">
 </head>
 <body>
   <div class="menu-container">
@@ -17,14 +17,14 @@
       <nav class="menu-nav">
 
 
-        <button class="menu-item" onclick="location.href='historialMundiales.html'">
+        <button class="menu-item" onclick="location.href=window.projectUrl('historialMundiales.html')">
           <div class="menu-icon">
             <img src="Image/historialMundiales.png" alt="Music Gendre Data">
           </div>
           <span class="label">Music Gendre Data</span>
         </button>
 
-        <button class="menu-item" onclick="location.href='ajustes.php'">
+        <button class="menu-item" onclick="location.href=window.projectUrl('PHP/ajustes.php')">
           <div class="menu-icon">
             <img src="Image/ajustesLogo.png" alt="Ajustes">
           </div>
@@ -32,21 +32,21 @@
         </button>
 
 
-        <button class="menu-item admin-only" onclick="location.href='aceptarPublicacionesAdmin.html'">
+        <button class="menu-item admin-only" onclick="location.href=window.projectUrl('aceptarPublicacionesAdmin.html')">
           <div class="menu-icon">
             <img src="Image/controlAdmin.png" alt="Control de publicaciones">
           </div>
           <span class="label">Control de publicaciones</span>
         </button>
 
-        <button class="menu-item admin-only" onclick="location.href='modificarHistorialMundialesAdmin.html'">
+        <button class="menu-item admin-only" onclick="location.href=window.projectUrl('modificarHistorialMundialesAdmin.html')">
           <div class="menu-icon">
             <img src="Image/mundial.png" alt="Control Mundial">
           </div>
           <span class="label">Control de mundiales</span>
         </button>
 
-        <button class="menu-item admin-only" onclick="location.href='adminControlDeCategorias.html'">
+        <button class="menu-item admin-only" onclick="location.href=window.projectUrl('adminControlDeCategorias.html')">
           <div class="menu-icon">
             <img src="Image/hash.png" alt="Control de etiquetas">
           </div>

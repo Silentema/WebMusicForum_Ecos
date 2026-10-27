@@ -1,8 +1,8 @@
 <?php
 //Memoria digital para guardar datos de un usuario mientras navega en la página
 session_start();
-require_once 'error_popup.php';
-require 'conexion.php';
+require_once __DIR__ . '/error_popup.php';
+require __DIR__ . '/conexion.php';
 
 //Verificación de los datos mediante el html
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -29,7 +29,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION['rol'] = $usuario_encontrado['id_rol'];
 
             //Reedireción a la página principal después de un inicio de sesión exitoso
-            header("Location: 3main.html");
+            header("Location: ../3main.html");
             exit();
             
         } else {
