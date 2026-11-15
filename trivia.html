@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ECOS • Trivia Evanescence</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="CSS/Main.css">
+    <link rel="stylesheet" href="CSS/back-btn.css">
+    <link rel="stylesheet" href="CSS/trivia.css">
+
+    <script>
+    function applyContrastFromStorage() {
+        if (localStorage.getItem('contrastMode') === 'true') {
+            document.body.classList.add('contrast-theme');
+        } else {
+            document.body.classList.remove('contrast-theme');
+        }
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+        applyContrastFromStorage();
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'contrastMode') {
+                applyContrastFromStorage();
+            }
+        });
+    });
+    </script>
+</head>
+<body style="padding-top:70px;">
+
+    <!-- Dynamic Header -->
+    <div id="header-container"></div>
+    <script src="headerLoader.js"></script>
+
+    <!-- Back Button -->
+    <button class="back-btn" onclick="window.location.href='3main.html'" aria-label="Volver al inicio" style="top:90px">←</button>
+
+    <main class="trivia-page-wrapper">
+        <!-- Hero Banner -->
+        <section class="trivia-hero">
+            <div class="trivia-hero-text">
+                <span class="trivia-hero-badge">🎸 Reto Musical ECOS</span>
+                <h1 class="trivia-hero-title">Trivia Evanescence</h1>
+                <p class="trivia-hero-subtitle">
+                    ¿Qué tan fanático eres de <strong>Evanescence</strong> y <strong>Amy Lee</strong>? 
+                    Pon a prueba tus conocimientos sobre sus álbumes legendarios, himnos mundiales y momentos clave de su trayectoria.
+                </p>
+            </div>
+            <div class="trivia-hero-image-wrap">
+                <img src="Image/fallen.jpg" alt="Evanescence Fallen Album" class="trivia-hero-cover">
+            </div>
+        </section>
+
+        <!-- Main Interactive Quiz Box -->
+        <div class="trivia-box" id="trivia-box">
+            
+            <!-- SCREEN 1: INTRO -->
+            <div class="trivia-screen trivia-intro-screen active" id="screen-intro">
+                <div class="trivia-intro-icon">🤘</div>
+                <h2 class="trivia-intro-title">¿Listo para el desafío de Evanescence?</h2>
+                <p class="trivia-intro-text">
+                    Responderás 10 preguntas sobre la discografía, integrantes, récords y curiosidades de la banda. 
+                    ¡Al final descubrirás qué rango de fan tienes y podrás revisar todas las respuestas!
+                </p>
+
+                <div class="trivia-rules-grid">
+                    <div class="trivia-rule-card">
+                        <div class="trivia-rule-icon">🎵</div>
+                        <div class="trivia-rule-title">10 Preguntas</div>
+                        <div class="trivia-rule-desc">Desde <em>Fallen</em> hasta <em>The Bitter Truth</em></div>
+                    </div>
+                    <div class="trivia-rule-card">
+                        <div class="trivia-rule-icon">💡</div>
+                        <div class="trivia-rule-title">Datos Curiosos</div>
+                        <div class="trivia-rule-desc">Aprende la historia detrás de cada canción</div>
+                    </div>
+                    <div class="trivia-rule-card">
+                        <div class="trivia-rule-icon">🏆</div>
+                        <div class="trivia-rule-title">Rango de Fan</div>
+                        <div class="trivia-rule-desc">Compite por el título de 'Vocalista de Honor'</div>
+                    </div>
+                </div>
+
+                <div id="intro-highscore" style="margin-bottom: 24px; font-size: 14px; font-weight: 600; color: var(--trivia-subtext);">
+                    <!-- Highscore inserted by JS -->
+                </div>
+
+                <div>
+                    <button class="trivia-btn-start" onclick="iniciarTrivia()">
+                        Comenzar Trivia
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- SCREEN 2: QUESTION -->
+            <div class="trivia-screen" id="screen-question">
+                <div class="trivia-topbar">
+                    <span class="trivia-counter" id="trivia-counter">Pregunta 1 de 10</span>
+                    <span class="trivia-score-live" id="trivia-score-live">Puntaje: 0</span>
+                    <button class="trivia-sound-toggle" id="sound-toggle-btn" onclick="toggleSonido()" title="Activar/Desactivar efectos de sonido">🔊</button>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="trivia-progress-track">
+                    <div class="trivia-progress-fill" id="trivia-progress-fill"></div>
+                </div>
+
+                <!-- Question Text -->
+                <h2 class="trivia-question-title" id="trivia-question-title">Cargando pregunta...</h2>
+
+                <!-- Options -->
+                <div class="trivia-options-grid" id="trivia-options-grid">
+                    <!-- Populated by JS -->
+                </div>
+
+                <!-- Explanation Box -->
+                <div class="trivia-explanation" id="trivia-explanation">
+                    <div class="trivia-explanation-title">
+                        <span id="explanation-icon">💡</span>
+                        <span id="explanation-heading">Dato de Evanescence</span>
+                    </div>
+                    <div class="trivia-explanation-text" id="explanation-text"></div>
+                </div>
+
+                <!-- Bottom Bar -->
+                <div class="trivia-bottom-bar">
+                    <button class="trivia-btn-next" id="trivia-btn-next" onclick="siguientePregunta()">
+                        Siguiente pregunta
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- SCREEN 3: RESULTS -->
+            <div class="trivia-screen trivia-results-screen" id="screen-results">
+                <div class="trivia-result-badge" id="result-badge">🏆</div>
+                <h2 class="trivia-result-title" id="result-title">¡Desafío Completado!</h2>
+                <div>
+                    <span class="trivia-result-rank" id="result-rank">Vocalista de Honor de Evanescence</span>
+                </div>
+
+                <div class="trivia-score-box">
+                    <div class="trivia-score-large" id="result-score">10 / 10</div>
+                    <div class="trivia-score-desc" id="result-desc">¡Puntaje perfecto! Conoces cada secreto de la banda.</div>
+                </div>
+
+                <div class="trivia-result-actions">
+                    <button class="trivia-btn-restart" onclick="reiniciarTrivia()">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="1 4 1 10 7 10"></polyline>
+                            <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+                        </svg>
+                        Jugar de nuevo
+                    </button>
+                    <button class="trivia-btn-share" onclick="compartirResultado()">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="18" cy="5" r="3"></circle>
+                            <circle cx="6" cy="12" r="3"></circle>
+                            <circle cx="18" cy="19" r="3"></circle>
+                            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                        </svg>
+                        Copiar resultado
+                    </button>
+                    <button class="trivia-btn-share" onclick="window.location.href='3main.html'">
+                        🏠 Volver al inicio
+                    </button>
+                </div>
+
+                <!-- Answers Review -->
+                <div class="trivia-review-wrap">
+                    <h3 class="trivia-review-header">
+                        <span>📋</span> Resumen de tus respuestas
+                    </h3>
+                    <div id="trivia-review-list">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Quiz Logic & Sound Synthesizer -->
+    <script>
+    // PREGUNTAS DE EVANESCENCE
+    const PREGUNTAS = [
+        {
+            pregunta: "¿Quién es la icónica vocalista principal, pianista y cofundadora de Evanescence?",
+            opciones: ["Amy Lee", "Hayley Williams", "Cristina Scabbia", "Sharon den Adel"],
+            correcta: 0,
+            explicacion: "Amy Lee fundó Evanescence a mediados de los 90. Además de su privilegiada voz de mezzosoprano lírica, es pianista clásica y principal compositora del grupo."
+        },
+        {
+            pregunta: "¿En qué año se lanzó el histórico álbum debut de estudio 'Fallen'?",
+            opciones: ["2001", "2003", "2005", "1999"],
+            correcta: 1,
+            explicacion: "'Fallen' vio la luz en marzo de 2003. Con éxitos como 'Bring Me to Life' y 'My Immortal', vendió más de 17 millones de copias alrededor del mundo."
+        },
+        {
+            pregunta: "¿Qué vocalista invitado participó en la voz masculina del hit 'Bring Me to Life'?",
+            opciones: ["Paul McCoy (12 Stones)", "Chester Bennington (Linkin Park)", "Jacoby Shaddix (Papa Roach)", "Shaun Morgan (Seether)"],
+            correcta: 0,
+            explicacion: "Paul McCoy, líder de la banda 12 Stones, grabó las líneas vocales masculinas por sugerencia del sello discográfico para el lanzamiento radial."
+        },
+        {
+            pregunta: "¿Qué premios Grammy ganó Evanescence en la ceremonia del año 2004?",
+            opciones: [
+                "Álbum del Año y Grabación del Año",
+                "Mejor Artista Nuevo y Mejor Interpretación de Hard Rock",
+                "Mejor Canción de Rock y Mejor Álbum Alternativo",
+                "Mejor Video Musical y Mejor Banda Sonora"
+            ],
+            correcta: 1,
+            explicacion: "La banda se coronó ganando dos prestigiosos Grammy en 2004: 'Best New Artist' y 'Best Hard Rock Performance' por 'Bring Me to Life'."
+        },
+        {
+            pregunta: "¿En qué ciudad y estado estadounidense nació originalmente Evanescence?",
+            opciones: ["Seattle, Washington", "Little Rock, Arkansas", "Los Ángeles, California", "Nashville, Tennessee"],
+            correcta: 1,
+            explicacion: "Amy Lee y Ben Moody se conocieron en un campamento juvenil en Little Rock, Arkansas, en 1994, donde iniciaron sus primeros demos acústicos."
+        },
+        {
+            pregunta: "¿Cuál fue el exitoso sencillo principal del segundo álbum de estudio 'The Open Door' (2006)?",
+            opciones: ["Call Me When You're Sober", "Lithium", "Sweet Sacrifice", "Good Enough"],
+            correcta: 0,
+            explicacion: "'Call Me When You're Sober' fue el single de presentación de 'The Open Door' y alcanzó el top 10 en las listas de sencillos de Estados Unidos, Reino Unido y Latinoamérica."
+        },
+        {
+            pregunta: "¿Qué famosa película de superhéroes de 2003 incluyó 'Bring Me to Life' y 'My Immortal' en su soundtrack?",
+            opciones: ["Spider-Man", "Daredevil", "X-Men 2", "The Punisher"],
+            correcta: 1,
+            explicacion: "Ambas canciones fueron incluidas en la banda sonora de la película 'Daredevil' (protagonizada por Ben Affleck), lo que impulsó enormemente su reconocimiento global."
+        },
+        {
+            pregunta: "¿Cómo se llama el álbum de 2017 donde la banda reimaginó sus temas con orquesta sinfónica y sintetizadores?",
+            opciones: ["Synthesis", "Origin", "Anywhere but Home", "Lost Whispers"],
+            correcta: 0,
+            explicacion: "'Synthesis' (2017) fusionó arreglos orquestales del maestro David Campbell con bases electrónicas, acompañado de una aclamada gira mundial sinfónica."
+        },
+        {
+            pregunta: "¿Qué instrumento acústico de cuerda toca Amy Lee además del piano clásico?",
+            opciones: ["Violonchelo", "Arpa", "Contrabajo", "Violín"],
+            correcta: 1,
+            explicacion: "Amy Lee aprendió a tocar el arpa e interpretó este instrumento tanto en grabaciones de estudio como en directos durante las giras de 'Synthesis'."
+        },
+        {
+            pregunta: "¿Cuál es el título del quinto álbum de estudio lanzado en 2021 tras casi una década sin temas inéditos?",
+            opciones: ["The Bitter Truth", "Fallen Souls", "The Open Door II", "Wasted on You"],
+            correcta: 0,
+            explicacion: "'The Bitter Truth' se lanzó en marzo de 2021 y marcó su esperado regreso con canciones potentes como 'Wasted on You', 'Use My Voice' y 'Better Without You'."
+        }
+    ];
+
+    // ESTADO DEL JUEGO
+    let preguntaActual = 0;
+    let puntaje = 0;
+    let respuestasUsuario = [];
+    let sonidoHabilitado = true;
+    let yaRespondio = false;
+
+    // SINTETIZADOR DE SONIDO (Web Audio API)
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    let audioCtx = null;
+
+    function playBeep(freq, type, duration, delay = 0) {
+        if (!sonidoHabilitado) return;
+        try {
+            if (!audioCtx) audioCtx = new AudioCtx();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+
+            setTimeout(() => {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            }, delay);
+        } catch (e) {
+            console.log("Audio not supported or blocked");
+        }
+    }
+
+    function soundCorrect() {
+        playBeep(523.25, 'triangle', 0.12, 0);   // C5
+        playBeep(659.25, 'triangle', 0.14, 80);  // E5
+        playBeep(783.99, 'triangle', 0.25, 160); // G5
+    }
+
+    function soundWrong() {
+        playBeep(220, 'sawtooth', 0.15, 0);   // A3
+        playBeep(185, 'sawtooth', 0.25, 100); // F#3
+    }
+
+    function soundVictory() {
+        playBeep(523.25, 'triangle', 0.15, 0);
+        playBeep(659.25, 'triangle', 0.15, 120);
+        playBeep(783.99, 'triangle', 0.15, 240);
+        playBeep(1046.50, 'triangle', 0.45, 360);
+    }
+
+    function toggleSonido() {
+        sonidoHabilitado = !sonidoHabilitado;
+        const btn = document.getElementById('sound-toggle-btn');
+        if (btn) btn.textContent = sonidoHabilitado ? '🔊' : '🔇';
+    }
+
+    // PANTALLAS
+    function mostrarPantalla(id) {
+        document.querySelectorAll('.trivia-screen').forEach(s => s.classList.remove('active'));
+        const target = document.getElementById(id);
+        if (target) target.classList.add('active');
+    }
+
+    function actualizarHighscoreIntro() {
+        const hs = localStorage.getItem('evanescence_trivia_highscore');
+        const container = document.getElementById('intro-highscore');
+        if (container) {
+            if (hs !== null) {
+                container.innerHTML = `⭐ Tu récord anterior: <strong>${hs} / 10</strong> aciertos`;
+            } else {
+                container.innerHTML = `⭐ ¡Sé el primero en lograr 10 / 10!`;
+            }
+        }
+    }
+
+    // INICIAR
+    function iniciarTrivia() {
+        preguntaActual = 0;
+        puntaje = 0;
+        respuestasUsuario = [];
+        cargarPregunta();
+        mostrarPantalla('screen-question');
+    }
+
+    function cargarPregunta() {
+        yaRespondio = false;
+        const q = PREGUNTAS[preguntaActual];
+        
+        // Contadores
+        document.getElementById('trivia-counter').textContent = `Pregunta ${preguntaActual + 1} de ${PREGUNTAS.length}`;
+        document.getElementById('trivia-score-live').textContent = `Puntaje: ${puntaje}`;
+
+        // Barra de progreso
+        const porcentaje = ((preguntaActual) / PREGUNTAS.length) * 100;
+        document.getElementById('trivia-progress-fill').style.width = `${porcentaje}%`;
+
+        // Título de la pregunta
+        document.getElementById('trivia-question-title').textContent = q.pregunta;
+
+        // Opciones
+        const grid = document.getElementById('trivia-options-grid');
+        grid.innerHTML = '';
+        const letras = ['A', 'B', 'C', 'D'];
+
+        q.opciones.forEach((opcion, index) => {
+            const btn = document.createElement('button');
+            btn.className = 'trivia-option-btn';
+            btn.id = `option-btn-${index}`;
+            btn.onclick = () => seleccionarOpcion(index);
+
+            btn.innerHTML = `
+                <span class="trivia-option-letter">${letras[index]}</span>
+                <span class="trivia-option-text">${opcion}</span>
+            `;
+            grid.appendChild(btn);
+        });
+
+        // Ocultar explicación y botón siguiente
+        const expBox = document.getElementById('trivia-explanation');
+        expBox.classList.remove('show');
+        const nextBtn = document.getElementById('trivia-btn-next');
+        nextBtn.classList.remove('show');
+    }
+
+    function seleccionarOpcion(opcionSeleccionada) {
+        if (yaRespondio) return;
+        yaRespondio = true;
+
+        const q = PREGUNTAS[preguntaActual];
+        const esCorrecta = (opcionSeleccionada === q.correcta);
+
+        // Guardar para revisión
+        respuestasUsuario.push({
+            pregunta: q.pregunta,
+            opciones: q.opciones,
+            seleccionada: opcionSeleccionada,
+            correcta: q.correcta,
+            explicacion: q.explicacion,
+            esCorrecta: esCorrecta
+        });
+
+        // Deshabilitar todos los botones de opciones
+        const botones = document.querySelectorAll('.trivia-option-btn');
+        botones.forEach(b => b.disabled = true);
+
+        // Resaltar seleccionado y correcto
+        const btnSeleccionado = document.getElementById(`option-btn-${opcionSeleccionada}`);
+        const btnCorrecto = document.getElementById(`option-btn-${q.correcta}`);
+
+        if (esCorrecta) {
+            puntaje++;
+            btnSeleccionado.classList.add('correct');
+            soundCorrect();
+        } else {
+            btnSeleccionado.classList.add('wrong');
+            btnCorrecto.classList.add('correct');
+            soundWrong();
+        }
+
+        // Actualizar puntaje live
+        document.getElementById('trivia-score-live').textContent = `Puntaje: ${puntaje}`;
+
+        // Mostrar explicación
+        const expBox = document.getElementById('trivia-explanation');
+        const expIcon = document.getElementById('explanation-icon');
+        const expHeading = document.getElementById('explanation-heading');
+        const expText = document.getElementById('explanation-text');
+
+        expIcon.textContent = esCorrecta ? '🎉' : '💡';
+        expHeading.textContent = esCorrecta ? '¡Respuesta Correcta!' : 'Respuesta Incorrecta';
+        expText.textContent = q.explicacion;
+        expBox.classList.add('show');
+
+        // Configurar botón siguiente
+        const nextBtn = document.getElementById('trivia-btn-next');
+        if (preguntaActual === PREGUNTAS.length - 1) {
+            nextBtn.innerHTML = `
+                Ver Resultados 🎉
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="8" r="7"></circle>
+                    <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
+                </svg>
+            `;
+        } else {
+            nextBtn.innerHTML = `
+                Siguiente pregunta
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+            `;
+        }
+        nextBtn.classList.add('show');
+    }
+
+    function siguientePregunta() {
+        preguntaActual++;
+        if (preguntaActual < PREGUNTAS.length) {
+            cargarPregunta();
+        } else {
+            finalizarTrivia();
+        }
+    }
+
+    function finalizarTrivia() {
+        // Progreso 100%
+        document.getElementById('trivia-progress-fill').style.width = '100%';
+
+        // Guardar Highscore
+        const hsGuardado = localStorage.getItem('evanescence_trivia_highscore');
+        if (hsGuardado === null || puntaje > parseInt(hsGuardado, 10)) {
+            localStorage.setItem('evanescence_trivia_highscore', puntaje);
+        }
+
+        // Definir Rango y Mensaje
+        let badge = '🎵';
+        let titulo = '¡Trivia Finalizada!';
+        let rango = 'Oyente Casual';
+        let desc = '';
+
+        if (puntaje === 10) {
+            badge = '🏆';
+            titulo = '¡Dominio Absoluto!';
+            rango = 'Vocalista de Honor de Evanescence';
+            desc = '¡Puntaje perfecto (10/10)! Conoces cada historia, miembro y melodía creada por Amy Lee.';
+            soundVictory();
+        } else if (puntaje >= 8) {
+            badge = '🎸';
+            titulo = '¡Impresionante Fan!';
+            rango = 'Inmortal de Fallen';
+            desc = `Obtuviste ${puntaje} de 10 aciertos. Tu pasión por el rock alternativo y la banda es indiscutible.`;
+            soundVictory();
+        } else if (puntaje >= 5) {
+            badge = '💿';
+            titulo = '¡Buen Intento!';
+            rango = 'Fan de Bring Me to Life';
+            desc = `Obtuviste ${puntaje} de 10 aciertos. Conoces los grandes éxitos y momentos clave de la banda.`;
+        } else {
+            badge = '🎧';
+            titulo = '¡Sigue Descubriendo!';
+            rango = 'Nuevo Explorador del Rock';
+            desc = `Obtuviste ${puntaje} de 10 aciertos. Es una gran oportunidad para escuchar álbumes como Fallen y The Open Door.`;
+        }
+
+        document.getElementById('result-badge').textContent = badge;
+        document.getElementById('result-title').textContent = titulo;
+        document.getElementById('result-rank').textContent = rango;
+        document.getElementById('result-score').textContent = `${puntaje} / 10`;
+        document.getElementById('result-desc').textContent = desc;
+
+        // Armar lista de revisión
+        const reviewList = document.getElementById('trivia-review-list');
+        reviewList.innerHTML = '';
+
+        respuestasUsuario.forEach((r, idx) => {
+            const item = document.createElement('div');
+            item.className = `trivia-review-item ${r.esCorrecta ? 'is-correct' : 'is-wrong'}`;
+
+            item.innerHTML = `
+                <div class="trivia-review-q">${idx + 1}. ${r.pregunta}</div>
+                <div class="trivia-review-answer">
+                    <strong>Tu respuesta:</strong> ${r.opciones[r.seleccionada]} ${r.esCorrecta ? '✅' : '❌'}
+                    ${!r.esCorrecta ? `<br><strong>Respuesta correcta:</strong> ${r.opciones[r.correcta]} ✅` : ''}
+                </div>
+            `;
+            reviewList.appendChild(item);
+        });
+
+        mostrarPantalla('screen-results');
+    }
+
+    function reiniciarTrivia() {
+        actualizarHighscoreIntro();
+        mostrarPantalla('screen-intro');
+    }
+
+    function compartirResultado() {
+        const texto = `🎸 ¡Obtuve ${puntaje}/10 en la Trivia de Evanescence en ECOS Music Forum! ¿Puedes superarme?`;
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(texto).then(() => {
+                alert('¡Resultado copiado al portapapeles! Puedes pegarlo en tus publicaciones o redes.');
+            });
+        } else {
+            alert(texto);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        actualizarHighscoreIntro();
+    });
+    </script>
+</body>
+</html>

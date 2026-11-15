@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3307
--- Tiempo de generación: 25-10-2026 a las 22:20:47
+-- Tiempo de generación: 26-10-2026 a las 18:02:46
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -180,7 +180,9 @@ CREATE TABLE `usuario` (
 
 INSERT INTO `usuario` (`id_rol`, `nombre`, `email`, `contraseña_hash`, `fecha_nacimiento`, `genero`, `alias`, `pais`, `avatar`, `banner`, `id_usuario`, `bio`) VALUES
 (1, 'Robert Pendleton', 'robert@gmail.com', '$2y$10$C4vCEo4I0l1.7/YUhmKR.ORXcl9224FHsMBhGOv/x6PBzA7c4fRX6', '1900-05-09', 'masculino', '@robertpendleton188X', 'Londres', 'Image/25a9a61a55b9902c7c233a1baf6a6917.png', 'Image/ce051ff10af3b898d1dd47887fd7be97.png', 1, 'Me gustan los gatos'),
-(1, 'Rose Baird', 'rose@gmail.com', '$2y$10$Ni3lRp4vRBGlQdm5RWMBeO9rSx1ijqyITXN5g54BmETaOsejpPK9.', '2005-05-09', 'femenino', NULL, NULL, NULL, NULL, 2, '');
+(1, 'Rose Baird', 'rose@gmail.com', '$2y$10$Ni3lRp4vRBGlQdm5RWMBeO9rSx1ijqyITXN5g54BmETaOsejpPK9.', '2005-05-09', 'femenino', NULL, NULL, 'Image/d0ca7f10d41694f9dd2cff9729926e66.png', 'Image/0b92adb40379f99408e1e25bfc71c656.png', 2, 'asdfasdfsdaf'),
+(1, 'joaquin', 'hersegd2@gmial.com', '$2y$10$CLXvYqXn.yjm6hf8L7eeN.mYuhwysEyrQQ/YDkwCvg7peryPOpfAq', '1971-12-12', 'masculino', NULL, NULL, 'Image/f3d00884584a40c3a54c923be0c85270.png', 'Image/47f38357a816f37dcd5eca7ffc498190.png', 3, 'Me gusta mucho salir a correr'),
+(1, 'Fer Benitez', 'hersegd3@gmial.com', '$2y$10$/G8FksdBbDMYLUbhWyXy4.pn0lrXploBnd8V9BHYVgJVz5qUeUOCG', '1964-12-14', 'masculino', NULL, NULL, 'Image/dbc57ac275099507003d2ec3736539ad.png', 'Image/574b2a53b2f02e90314d1ad27e31dee5.png', 4, 'zxcdsfsdaf');
 
 --
 -- Índices para tablas volcadas
@@ -265,7 +267,7 @@ ALTER TABLE `usuario`
 -- AUTO_INCREMENT de la tabla `usuario`
 --
 ALTER TABLE `usuario`
-  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- Restricciones para tablas volcadas
