@@ -1,0 +1,260 @@
+/* ==========================================================
+   PÁGINA DE BÚSQUEDA (4busqueda.html + JS/busqueda.js)
+   ========================================================== */
+
+/* Ancho fijo de la página: .main-container centra a sus hijos (align-items: center),
+   así que sin esto el ancho dependía del contenido (títulos largos, usuarios, etc.) */
+.main-container > .container {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Reserva el espacio de la barra de scroll: así la página no "brinca"
+   entre resultados cortos (sin scroll) y largos (con scroll) */
+html {
+  scrollbar-gutter: stable;
+}
+
+/* Pestañas y línea alineadas con la columna de resultados (mismo padding que .content-grid) */
+.main-container > .container > .tabs-section {
+  padding: 0 clamp(16px, 5vw, 72px);
+}
+.main-container > .container > .tabs-divider {
+  width: auto;
+  margin: 0 clamp(16px, 5vw, 72px) 24px;
+}
+
+/* Pestañas Publicaciones / Usuarios */
+.tabs .tab {
+  transition: background 0.2s, color 0.2s;
+  border-radius: 12px;
+}
+.tabs .tab:focus:not(:focus-visible) {
+  outline: none;
+}
+.tabs .tab:hover,
+.tabs .tab.active:hover {
+  background: var(--hover);
+  color: #D24242;
+}
+
+/* Barra de búsqueda */
+.busqueda-barra {
+  display: flex;
+  gap: 10px;
+  max-width: 720px;
+  margin: 0 auto 18px;
+}
+.busqueda-barra input {
+  flex: 1;
+  min-width: 0;
+  height: 46px;
+  padding: 0 20px;
+  border: 1.5px solid var(--line, #ccc);
+  border-radius: 999px;
+  background: var(--card-bg);
+  color: var(--text);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.busqueda-barra input:focus {
+  border-color: var(--btn, #D24242);
+}
+.busqueda-barra button {
+  height: 46px;
+  padding: 0 26px;
+  border: none;
+  border-radius: 999px;
+  background: var(--btn, #D24242);
+  color: #fff;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* "Resultados para «rock»" */
+.busqueda-resumen {
+  margin: 0;
+  font-size: 1.05rem;
+  color: var(--text);
+  opacity: 0.85;
+}
+.busqueda-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 6px 3px 12px;
+  border-radius: 999px;
+  background: var(--btn, #D24242);
+  color: #fff;
+  font-weight: 600;
+}
+.busqueda-chip button {
+  border: none;
+  background: rgba(255, 255, 255, 0.25);
+  color: #fff;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+}
+
+/* Las publicaciones usan el mismo espacio que el feed */
+.busqueda-lista-posts {
+  display: contents;
+}
+
+/* Hashtags como enlaces dentro de las tarjetas */
+.post-tags a.post-tag:hover {
+  text-decoration: underline !important;
+}
+
+/* Filtros */
+.filtro-grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+.filtro-grupo:last-child {
+  margin-bottom: 0;
+}
+.filtro-grupo label {
+  font-weight: 600;
+  color: var(--text);
+}
+.filtro-select {
+  height: 40px;
+  padding: 0 12px;
+  border: 1.5px solid var(--line, #ccc);
+  border-radius: 12px;
+  background: var(--card-bg);
+  color: var(--text);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+/* Tarjetas de usuario (pestaña Usuarios) */
+.busqueda-lista-usuarios {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.user-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  border-radius: 16px;
+  transition: background-color 0.2s ease;
+}
+.user-card:hover {
+  background-color: var(--hover);
+}
+.user-profile-link {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+  min-width: 0;
+  text-decoration: none;
+  color: inherit;
+}
+.user-avatar {
+  width: 58px;
+  height: 58px;
+  border-radius: 999px;
+  object-fit: cover;
+  flex: 0 0 auto;
+}
+.user-main {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.user-name {
+  margin: 0 0 2px;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.user-username,
+.user-bio,
+.user-seguidores {
+  margin: 0 0 2px;
+  color: var(--sub);
+}
+.user-username {
+  font-weight: 300;
+}
+.user-seguidores {
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+.user-card .follow {
+  flex: 0 0 auto;
+  background: var(--btn, #D24242);
+  color: #fff;
+  border: 1.5px solid var(--btn, #D24242);
+  border-radius: 67px;
+  padding: 9px 20px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.user-card .follow.siguiendo {
+  background: transparent;
+  color: var(--btn, #D24242);
+}
+.user-card .follow:disabled {
+  opacity: 0.6;
+}
+.user-tu {
+  flex: 0 0 auto;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1.5px solid var(--line, #ccc);
+  color: var(--sub);
+  font-size: 0.9rem;
+}
+
+/* Anula reglas viejas de Main.css (.user-main con margin-right: 228px, etc.) */
+.busqueda-lista-usuarios .user-card {
+  margin: 0;
+  padding: 16px;
+}
+.busqueda-lista-usuarios .user-main {
+  flex: 1 1 auto;
+  margin: 0;
+}
+.busqueda-lista-usuarios .user-name,
+.busqueda-lista-usuarios .user-username,
+.busqueda-lista-usuarios .user-bio {
+  font-size: inherit;
+}
+.busqueda-lista-usuarios .user-name {
+  font-size: 20px;
+}
+.busqueda-lista-usuarios .user-username,
+.busqueda-lista-usuarios .user-bio {
+  font-size: 16px;
+}
+
+@media (max-width: 600px) {
+  .busqueda-barra button {
+    padding: 0 16px;
+  }
+  .user-card {
+    padding: 12px 8px;
+  }
+}

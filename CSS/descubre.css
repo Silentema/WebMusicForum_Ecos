@@ -68,6 +68,16 @@
             margin-bottom: 0;
         }
 
+        /* Lista dinámica (JS/descubre.js): cada usuario va en su propio enlace,
+           así que el espacio se pone entre enlaces */
+        #descubre-lista > a {
+            display: block;
+        }
+
+        #descubre-lista > a:not(:last-child) {
+            margin-bottom: 15px;
+        }
+
         .discover-avatar {
             width: 40px;
             height: 40px;

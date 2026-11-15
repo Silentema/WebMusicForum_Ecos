@@ -3,12 +3,21 @@
 session_start();
 require_once __DIR__ . '/error_popup.php';
 require __DIR__ . '/conexion.php';
+require_once __DIR__ . '/admin.php';
 
 //Verificación de los datos mediante el html
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    $correo = $_POST['correo'];
-    $contrasena_ingresada = $_POST['contrasena'];
+    $correo = $_POST['correo'] ?? '';
+    $contrasena_ingresada = $_POST['contrasena'] ?? '';
+    $tipo_cuenta = $_POST['tipoDeCuenta'] ?? '';
+
+    if (!in_array($tipo_cuenta, ['user', 'admin'], true)) {
+        mostrarPopupError(
+            "Selecciona un tipo de cuenta (Usuario o Administrador).",
+            '2inicioSesion.html'
+        );
+    }
 
     try {
         //Buscar al usuario SOLO por su correo
@@ -22,11 +31,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         //Verificación de la contraseña ingresada con la contraseña almacenada en la base de datos
         if ($usuario_encontrado && password_verify($contrasena_ingresada, $usuario_encontrado['contraseña_hash'])) {
-            
+
+            // Solo la cuenta administradora puede entrar como "Administrador"
+            $es_admin = esCuentaAdministrador($usuario_encontrado);
+            if ($tipo_cuenta === 'admin' && !$es_admin) {
+                mostrarPopupError(
+                    "No puedes iniciar sesión como Administrador: esta cuenta no tiene permisos de administrador. Elige \"Usuario\" en Tipo de Cuenta.",
+                    '2inicioSesion.html'
+                );
+            }
+
+            // Nueva sesión limpia (evita reutilizar una sesión anterior)
+            session_regenerate_id(true);
+
             //El inicio de sesión es correcto, se guardan los datos del usuario en la sesión
             $_SESSION['id_usuario'] = $usuario_encontrado['id_usuario'];
             $_SESSION['nombre_usuario'] = $usuario_encontrado['nombre'];
             $_SESSION['rol'] = $usuario_encontrado['id_rol'];
+            // Modo administrador solo si lo eligió Y la cuenta realmente es la administradora
+            $_SESSION['es_admin'] = ($tipo_cuenta === 'admin' && $es_admin);
 
             //Reedireción a la página principal después de un inicio de sesión exitoso
             header("Location: ../3main.html");

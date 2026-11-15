@@ -251,9 +251,9 @@
         <div class="header">
             <div class="user-info">
                 <div class="user-avatar">
-                    <img src="avatar_actual.php" alt="Eric Lopez Parra">
+                    <img src="PHP/avatar_actual.php" alt="Avatar">
                 </div>
-                <div class="user-name" id="user-name-display">Mi Publicación</div>
+                <div class="user-name" id="user-name-display">Crear Publicación</div>
             </div>
             <button class="close-btn" aria-label="Close" onclick="window.history.back()">
                 <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -270,7 +270,7 @@
             <button type="button" class="remove-img-btn" onclick="quitarImagen()" title="Quitar imagen">&times;</button>
         </div>
 
-        <textarea id="desc-field" class="description-textarea" placeholder="¿Qué estás escuchando o pensando hoy?"></textarea>
+        <textarea id="desc-field" class="description-textarea" placeholder="¿Qué quieres compartir hoy? Usa #hashtags para etiquetar tu publicación"></textarea>
 
         <input type="file" id="file-uploader" accept="image/*" style="display:none;" onchange="procesarArchivo(this)">
 
@@ -342,8 +342,9 @@
                     throw new Error(data.error || 'Error al publicar.');
                 }
 
-                alert('¡Publicación creada exitosamente!');
-                window.location.href = '6perfilPropio.php';
+                // Puede quedar pendiente de aprobación: el servidor manda el mensaje correcto
+                alert(data.mensaje || '¡Publicación creada exitosamente!');
+                window.location.href = 'PHP/6perfilPropio.php';
             } catch (err) {
                 alert(err.message);
                 btn.disabled = false;

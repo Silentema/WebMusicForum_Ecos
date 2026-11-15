@@ -82,15 +82,8 @@
           event.stopPropagation()
 
           } else {
-          // Guardamos el rol en local, pero dejamos que PHP procese el inicio de sesión
-          var tipo = document.getElementById('tipoDeCuenta').value;
-          if (tipo === 'admin') {
-            localStorage.setItem('rol', 'admin');
-          } else if (tipo === 'user') {
-            localStorage.setItem('rol', 'user');
-          } else {
-            localStorage.removeItem('rol');
-          }
+          // El rol lo valida PHP/login.php con la base de datos; aquí ya no se guarda nada
+          localStorage.removeItem('rol');
         }
 
         form.classList.add('was-validated')

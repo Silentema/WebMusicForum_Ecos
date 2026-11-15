@@ -1,3 +1,4 @@
+<?php require __DIR__ . '/PHP/solo_admin.php'; ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -233,7 +234,7 @@
       </style>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ECOS • Administrar Publicaciones</title>
+    <title>ECOS • Control de categorías</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Poppins:wght@700&display=swap" rel="stylesheet">
@@ -267,70 +268,23 @@
 
         <div class="form-section">
           <label class="form-label">Crear nueva categoría</label>
-          <input class="form-input" type="text" placeholder="Nombre de la categoría" id="new-category-input" />
+          <input class="form-input" type="text" placeholder="Nombre del hashtag (ej. Rock)" id="new-category-input" />
           <button class="btn btn-accept form-button" id="accept-left-btn">Aceptar</button>
         </div>
       </section>
 
       <section class="right-section">
-        <h2 class="request-title">Solicitud de nueva categoría</h2>
-        <div class="category-list">
-          <label class="category-item">
-            <span class="category-name">#Mundial2026</span>
-            <input type="checkbox" class="checkbox" />
-          </label>
-          <label class="category-item">
-            <span class="category-name">#WorldCup2026</span>
-            <input type="checkbox" class="checkbox" />
-          </label>
-          <label class="category-item">
-            <span class="category-name">#FIFAWorldCup</span>
-            <input type="checkbox" class="checkbox" />
-          </label>
-          <label class="category-item">
-            <span class="category-name">#México2026</span>
-            <input type="checkbox" class="checkbox" />
-          </label>
-          <label class="category-item">
-            <span class="category-name">#Copa2026</span>
-            <input type="checkbox" class="checkbox" />
-          </label>
-          <label class="category-item">
-            <span class="category-name">#Mundial2026</span>
-            <input type="checkbox" class="checkbox" />
-          </label>
-          <label class="category-item">
-            <span class="category-name">#WorldCup2026</span>
-            <input type="checkbox" class="checkbox" />
-          </label>
-          <label class="category-item">
-            <span class="category-name">#FIFAWorldCup</span>
-            <input type="checkbox" class="checkbox" />
-          </label>
-          <label class="category-item">
-            <span class="category-name">#México2026</span>
-            <input type="checkbox" class="checkbox" />
-          </label>
-          <label class="category-item">
-            <span class="category-name">#Copa2026</span>
-            <input type="checkbox" class="checkbox" />
-          </label>
+        <h2 class="request-title">Hashtags publicados</h2>
+        <p class="categorias-ayuda">Marca los que quieras borrar. Se quitarán de las publicaciones y de Temas Actuales.</p>
+        <div class="category-list" id="lista-hashtags">
+          <p class="categorias-ayuda">Cargando hashtags...</p>
         </div>
       </section>
     </div>
-
     <div class="button-container">
-      <button class="btn btn-reject" id="delete-categories-btn">Eliminar</button>
+      <button class="btn btn-reject" id="delete-categories-btn" disabled>Eliminar</button>
     </div>
-
-    
-
- 
-    
-   
-
-
-<!-- Toast Notification para categoría creada -->
+<!-- Aviso flotante -->
 <div id="category-toast" class="toast-notification">
     <svg class="toast-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M9 12L11 14L15 10" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -364,68 +318,154 @@
         transform: translateX(-50%) translateY(0);
         pointer-events: auto;
     }
-    .toast-icon {
-        width: 28px;
-        height: 28px;
-        color: #fff;
-    }
-    .toast-text {
-        font-size: 16px;
-        font-weight: 600;
-    }
+    .toast-icon { width: 28px; height: 28px; color: #fff; }
+    .toast-text { font-size: 16px; font-weight: 600; }
+
+    .categorias-ayuda { margin: -6px 0 12px; font-size: 0.9rem; opacity: 0.75; color: var(--text); }
+    .category-item { gap: 12px; cursor: pointer; }
+    .category-info { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+    .category-name a { color: inherit; text-decoration: none; overflow-wrap: anywhere; }
+    .category-name a:hover { text-decoration: underline; }
+    .category-usos { font-size: 0.8rem; opacity: 0.65; color: var(--text); }
+    .category-item.fade-out-category { opacity: 0; transition: opacity 0.4s ease; }
+    #delete-categories-btn:disabled { opacity: 0.45; cursor: default; }
+    .form-error { color: #ff6b6b; font-size: 0.85rem; margin: 6px 0 0; min-height: 1em; }
 </style>
 <script>
-function showCategoryNotification() {
+(function () {
+  const API = 'api_publicaciones.php';
+  const lista = document.getElementById('lista-hashtags');
+  const btnBorrar = document.getElementById('delete-categories-btn');
+  const input = document.getElementById('new-category-input');
+  const btnCrear = document.getElementById('accept-left-btn');
+
+  // Mensaje de error debajo del campo de texto
+  const errorCrear = document.createElement('p');
+  errorCrear.className = 'form-error';
+  btnCrear.insertAdjacentElement('beforebegin', errorCrear);
+
+  function escapar(texto) {
+    const div = document.createElement('div');
+    div.textContent = texto == null ? '' : String(texto);
+    return div.innerHTML;
+  }
+
+  function aviso(mensaje) {
     const toast = document.getElementById('category-toast');
+    toast.querySelector('.toast-text').textContent = mensaje;
     toast.classList.add('show');
-    setTimeout(() => {
-        toast.classList.remove('show');
-    }, 2500);
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-  var acceptBtn = document.getElementById('accept-left-btn');
-  var newCategoryInput = document.getElementById('new-category-input');
-  var categoryList = document.querySelector('.right-section .category-list');
-  if (acceptBtn && newCategoryInput && categoryList) {
-    acceptBtn.addEventListener('click', function() {
-      var value = newCategoryInput.value.trim();
-      if (value !== '') {
-        // Crear nuevo elemento de categoría
-        var div = document.createElement('div');
-        div.className = 'category-item';
-        div.innerHTML = '<span class="category-name">#' + value + '</span>' +
-                        '<input type="checkbox" class="checkbox" />';
-        categoryList.appendChild(div);
-        // Limpiar input y mostrar toast
-        newCategoryInput.value = '';
-        showCategoryNotification();
-      }
-    });
+    clearTimeout(toast._timer);
+    toast._timer = setTimeout(() => toast.classList.remove('show'), 2500);
   }
 
-  // Animación de eliminación en la derecha
-  var deleteBtn = document.getElementById('delete-categories-btn');
-  if (deleteBtn) {
-    deleteBtn.addEventListener('click', function() {
-      var categoryItems = document.querySelectorAll('.right-section .category-item');
-      var toDelete = [];
-      categoryItems.forEach(function(item) {
-        var checkbox = item.querySelector('.checkbox');
-        if (checkbox && checkbox.checked) {
-          toDelete.push(item);
-        }
-      });
-      toDelete.forEach(function(item) {
+  function textoUsos(h) {
+    if (h.usos === 0) return 'Sin publicaciones';
+    const base = `${h.usos} publicación${h.usos === 1 ? '' : 'es'}`;
+    return h.usos_aprobadas === h.usos ? base : `${base} (${h.usos - h.usos_aprobadas} pendiente${h.usos - h.usos_aprobadas === 1 ? '' : 's'})`;
+  }
+
+  function fila(h) {
+    return `
+      <label class="category-item" data-id="${h.id_hashtag}">
+        <span class="category-info">
+          <span class="category-name"><a href="4busqueda.html?tag=${encodeURIComponent(h.nombre)}" title="Ver publicaciones con este hashtag">#${escapar(h.nombre)}</a></span>
+          <span class="category-usos">${textoUsos(h)}</span>
+        </span>
+        <input type="checkbox" class="checkbox" value="${h.id_hashtag}" data-nombre="${escapar(h.nombre)}" aria-label="Seleccionar #${escapar(h.nombre)}" />
+      </label>`;
+  }
+
+  function seleccionados() {
+    return Array.from(lista.querySelectorAll('.checkbox:checked'));
+  }
+
+  function actualizarBoton() {
+    const n = seleccionados().length;
+    btnBorrar.disabled = n === 0;
+    btnBorrar.textContent = n ? `Eliminar (${n})` : 'Eliminar';
+  }
+
+  function mostrarVacio() {
+    if (!lista.querySelector('.category-item')) {
+      lista.innerHTML = '<p class="categorias-ayuda">Todavía no hay hashtags. Aparecerán aquí cuando alguien use #hashtags en sus publicaciones.</p>';
+    }
+  }
+
+  async function llamar(accion, datos) {
+    const opciones = datos ? { method: 'POST', body: datos } : { cache: 'no-store' };
+    const resp = await fetch(API + '?accion=' + accion, opciones);
+    const data = await resp.json();
+    if (!data.success) throw new Error(data.error || 'No se pudo completar la acción.');
+    return data;
+  }
+
+  async function cargar() {
+    try {
+      const data = await llamar('admin_hashtags');
+      lista.innerHTML = data.hashtags.map(fila).join('');
+      mostrarVacio();
+      actualizarBoton();
+    } catch (err) {
+      lista.innerHTML = `<p class="categorias-ayuda">${escapar(err.message)}</p>`;
+    }
+  }
+
+  async function crear() {
+    errorCrear.textContent = '';
+    const nombre = input.value.trim().replace(/^#/, '');
+    if (!nombre) {
+      errorCrear.textContent = 'Escribe el nombre del hashtag.';
+      return;
+    }
+    btnCrear.disabled = true;
+    try {
+      const datos = new FormData();
+      datos.append('nombre', nombre);
+      const data = await llamar('admin_crear_hashtag', datos);
+      const vacio = lista.querySelector('p.categorias-ayuda');
+      if (vacio) vacio.remove();
+      lista.insertAdjacentHTML('afterbegin', fila(data.hashtag));
+      input.value = '';
+      aviso(data.mensaje);
+    } catch (err) {
+      errorCrear.textContent = err.message;
+    } finally {
+      btnCrear.disabled = false;
+    }
+  }
+
+  async function borrar() {
+    const marcados = seleccionados();
+    if (!marcados.length) return;
+    const nombres = marcados.map(c => '#' + c.dataset.nombre).join(', ');
+    if (!confirm(`¿Eliminar ${marcados.length === 1 ? 'este hashtag' : 'estos ' + marcados.length + ' hashtags'}?\n\n${nombres}\n\nSe quitarán de todas las publicaciones y de Temas Actuales. Las publicaciones no se borran.`)) {
+      return;
+    }
+    btnBorrar.disabled = true;
+    try {
+      const datos = new FormData();
+      marcados.forEach(c => datos.append('ids[]', c.value));
+      const data = await llamar('admin_borrar_hashtags', datos);
+      marcados.forEach(c => {
+        const item = c.closest('.category-item');
         item.classList.add('fade-out-category');
-        setTimeout(function() {
-          item.remove();
-        }, 1000);
+        setTimeout(() => { item.remove(); mostrarVacio(); }, 400);
       });
-    });
+      aviso(data.mensaje);
+    } catch (err) {
+      alert(err.message);
+    } finally {
+      setTimeout(actualizarBoton, 420);
+    }
   }
-});
 
+  lista.addEventListener('change', (e) => { if (e.target.matches('.checkbox')) actualizarBoton(); });
+  btnBorrar.addEventListener('click', borrar);
+  btnCrear.addEventListener('click', crear);
+  input.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); crear(); } });
+
+  cargar();
+})();
 </script>
 </body>
 </html>

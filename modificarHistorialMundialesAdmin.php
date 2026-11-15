@@ -1,3 +1,4 @@
+<?php require __DIR__ . '/PHP/solo_admin.php'; ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>

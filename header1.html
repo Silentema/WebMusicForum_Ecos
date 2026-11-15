@@ -97,14 +97,18 @@ window.abrirMenu = function() {
                 mainArea.onclick = window.cerrarMenu;
             }
 
-const rol = localStorage.getItem('rol');
+// Opciones de administrador: las decide el servidor (no el navegador)
 const adminItems = overlay.querySelectorAll('.admin-only');
-
-if (rol && rol.trim().toLowerCase() === 'admin') {
-    adminItems.forEach(item => item.classList.add('show'));
-} else {
-    adminItems.forEach(item => item.classList.remove('show'));
-}
+adminItems.forEach(item => item.classList.remove('show'));
+localStorage.removeItem('rol');
+fetch(window.projectUrl('PHP/header_usuario.php'), { credentials: 'same-origin', cache: 'no-store' })
+    .then(res => res.json())
+    .then(user => {
+        if (user && user.es_admin === true) {
+            adminItems.forEach(item => item.classList.add('show'));
+        }
+    })
+    .catch(() => {});
 
             
             const sidebar = overlay.querySelector('.menu-sidebar');

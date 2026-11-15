@@ -10,10 +10,11 @@ if (!isset($_SESSION['id_usuario'])) {
 
 define('API_JSON_RESPONSE', true);
 require_once __DIR__ . '/conexion.php';
+require_once __DIR__ . '/admin.php';
 
 try {
     $stmt = $conexion->prepare(
-        'SELECT nombre, avatar
+        'SELECT nombre, avatar, email, id_rol
          FROM usuario
          WHERE id_usuario = :id'
     );
@@ -48,7 +49,9 @@ try {
     echo json_encode([
         'authenticated' => true,
         'nombre' => $usuario['nombre'],
-        'avatar' => $avatar
+        'avatar' => $avatar,
+        // Lo decide el servidor: entró como administrador y la cuenta es la administradora
+        'es_admin' => !empty($_SESSION['es_admin']) && esCuentaAdministrador($usuario)
     ]);
 } catch (PDOException $e) {
     error_log($e->getMessage());

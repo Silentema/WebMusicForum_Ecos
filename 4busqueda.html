@@ -3,649 +3,160 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ECOS • Resultados Mundiales</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <title>ECOS • Búsqueda</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="CSS/Main.css">
     <link rel="stylesheet" href="CSS/descubre.css" />
     <link rel="stylesheet" href="CSS/back-btn.css" />
-    <link rel="stylesheet" href="CSS/popup.css" />
-                <style>
-                .tabs .tab {
-                    transition: background 0.2s, color 0.2s, transform 0.18s cubic-bezier(.4,1.3,.6,1), box-shadow 0.18s;
-                    border-radius: 20px;
-                    padding: 0.7em .2em;
-                    margin: 0 0.2em;
-                }
-                .tabs .tab:hover {
-                    background: #f2f2f2;
-                    color: #D24242;
-                }
-                .tabs .tab.active:hover {
-                    background: #ffeaea;
-                    color: #D24242;
-                }
-                </style>
-        <style>
-        .tabs .tab {
-            transition: background 0.2s, color 0.2s;
-            border-radius: 12px;
-        }
-        .tabs .tab:hover {
-            background: var(--hover);
-            color: #D24242;
-        }
-        .tabs .tab.active:hover {
-            background: var(--hover);
-            color: #D24242;
-        }
-        </style>
-<!--<link rel="stylesheet" href="CSS/header1.css" />-->
-
+    <link rel="stylesheet" href="CSS/publicaciones.css" />
+    <link rel="stylesheet" href="CSS/busqueda.css" />
 </head>
 
 <body style="padding-top:70px;">
 
-<div id="header-container"></div>
-        <script src="JS/headerLoader.js"></script>
-        <script>
+    <div id="header-container"></div>
+    <script src="JS/headerLoader.js"></script>
+    <script>
         function applyContrastFromStorage() {
-            if (localStorage.getItem('contrastMode') === 'true') {
-                document.body.classList.add('contrast-theme');
-                var btn = document.getElementById('global-contrast-btn');
-                if (btn) btn.classList.add('active');
-            } else {
-                document.body.classList.remove('contrast-theme');
-                var btn = document.getElementById('global-contrast-btn');
-                if (btn) btn.classList.remove('active');
-            }
+            document.body.classList.toggle('contrast-theme', localStorage.getItem('contrastMode') === 'true');
         }
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             applyContrastFromStorage();
-            var btn = document.getElementById('global-contrast-btn');
-            if (btn) {
-                btn.addEventListener('click', function() {
-                    var isActive = document.body.classList.contains('contrast-theme');
-                    if (isActive) {
-                        localStorage.setItem('contrastMode', 'false');
-                    } else {
-                        localStorage.setItem('contrastMode', 'true');
-                    }
-                    applyContrastFromStorage();
-                });
-            }
-            window.addEventListener('storage', function(e) {
-                if (e.key === 'contrastMode') {
-                    applyContrastFromStorage();
-                }
+            window.addEventListener('storage', function (e) {
+                if (e.key === 'contrastMode') applyContrastFromStorage();
             });
         });
-        </script>
-        
+    </script>
 
-    <!-- Main Content -->
-    
-
-          <!-- Main Container -->
     <main class="main-container">
-
         <div class="container">
-                                <!-- Main Content -->
-    
-                            <button class="back-btn" onclick="history.back()">←</button>
+            <button class="back-btn" onclick="history.back()">←</button>
 
-        <div class="tabs-section">
-            <div class="tabs">
-                <button class="tab active" onclick="window.location.href='4busqueda.html'">Publicaciones</button>
-                <div class="divider"></div>
-                <button class="tab inactive" onclick="window.location.href='4busquedaUsuario.html'">Usuarios</button>
-            </div>
-        </div>
-        
+            <!-- Barra de búsqueda (se llena con ?q= de la URL) -->
+            <form id="busqueda-form" class="busqueda-barra" role="search">
+                <input type="search" id="busqueda-input" placeholder="Buscar publicaciones, #hashtags o usuarios..." autocomplete="off" aria-label="Buscar">
+                <button type="submit">Buscar</button>
+            </form>
 
-        <div class="tabs-divider"></div>
-       
-
-        <div class="content-grid">
-            <!-- Posts Feed -->
-            <div class="posts-feed">
-                
-                <!-- Post 1 - Resultado principal -->
-                <post-card 
-                    avatar="Image/pfp1Pie.jpg" 
-                    author="Alberto Aguilera Valadez" 
-                    image="Image/katy.jpg" 
-                    title="¡¿CUÁNDO VUELVE KATY PERRY A MÉXICO!?" 
-                    tag1="#Pop" 
-                    tag2="#KatyPerry" 
-                    tag3="Mexico" 
-                    date="31 / Oct / 2025" 
-                    likes="1k" 
-                    comments="15">
-                </post-card>
-
-                <!-- 
-                <article class="post-card">
-                    <div class="post-header">
-                        <img src="Image/pfp1Pie.jpg" alt="Alberto Aguilera Valadez" class="post-avatar">
-                        <h3 class="post-author">Alberto Aguilera Valadez</h3>
-                    </div>
-                    <div class="post-image-container">
-                        <img src="Image/copaImagen.jpeg" alt="Mundial 2026" class="post-image">
-                        <div class="post-image-gradient">
-                            <div class="post-image-title">Todo lo que tienes que saber para el Mundial de 2026</div>
-                        </div>
-                    </div>
-                    <div class="post-footer">
-                        <div class="post-tags">
-                            <span class="post-tag">#Canada</span>
-                            <span class="post-tag">#Mexico</span>
-                            <span class="post-tag">#USA</span>
-                        </div>
-                        <span class="post-date">31 / Oct / 2025</span>
-                        <div class="post-stats">
-                            <div class="post-stat">
-                                <span class="post-stat-number">1k</span>
-                                <svg class="post-icon" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M10 20L8.55 18.5831C6.86667 16.9301 5.475 15.5041 4.375 14.3052C3.275 13.1063 2.4 12.03 1.75 11.0763C1.1 10.1226 0.645833 9.24614 0.3875 8.44687C0.129167 7.64759 0 6.83015 0 5.99455C0 4.28701 0.525 2.86104 1.575 1.71662C2.625 0.572207 3.93333 0 5.5 0C6.36667 0 7.19167 0.199818 7.975 0.599455C8.75833 0.999092 9.43333 1.56222 10 2.28883C10.5667 1.56222 11.2417 0.999092 12.025 0.599455C12.8083 0.199818 13.6333 0 14.5 0C16.0667 0 17.375 0.572207 18.425 1.71662C19.475 2.86104 20 4.28701 20 5.99455C20 6.83015 19.8708 7.64759 19.6125 8.44687C19.3542 9.24614 18.9 10.1226 18.25 11.0763C17.6 12.03 16.725 13.1063 15.625 14.3052C14.525 15.5041 13.1333 16.9301 11.45 18.5831L10 20Z" fill="#777777"/>
-                                </svg>
-                            </div>
-                            <div class="post-stat">
-                                <span class="post-stat-number">15</span>
-                                <svg class="post-icon" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M20 20L16 16H2C1.45 16 0.979167 15.8042 0.5875 15.4125C0.195833 15.0208 0 14.55 0 14V2C0 1.45 0.195833 0.979167 0.5875 0.5875C0.979167 0.195833 1.45 0 2 0H18C18.55 0 19.0208 0.195833 19.4125 0.5875C19.8042 0.979167 20 1.45 20 2V20ZM2 14H16.85L18 15.125V2H2V14Z" fill="#777777"/>
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
-                </article>
-
-
-                <article class="post-card">
-                    <div class="post-header">
-                        <img src="Image/pfp1Pie.jpg" alt="Alberto Aguilera Valadez" class="post-avatar">
-                        <h3 class="post-author">Alberto Aguilera Valadez</h3>
-                    </div>
-                    <div class="post-image-container">
-                        <img src="Image/copaImagen.jpeg" alt="Mundial 2026" class="post-image">
-                        <div class="post-image-gradient">
-                            <div class="post-image-title">Todo lo que tienes que saber para el Mundial de 2026</div>
-                        </div>
-                    </div>
-                    <div class="post-footer">
-                        <div class="post-tags">
-                            <span class="post-tag">#Canada</span>
-                            <span class="post-tag">#Mexico</span>
-                            <span class="post-tag">#USA</span>
-                        </div>
-                        <span class="post-date">31 / Oct / 2025</span>
-                        <div class="post-stats">
-                            <div class="post-stat">
-                                <span class="post-stat-number">1k</span>
-                                <svg class="post-icon" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M10 20L8.55 18.5831C6.86667 16.9301 5.475 15.5041 4.375 14.3052C3.275 13.1063 2.4 12.03 1.75 11.0763C1.1 10.1226 0.645833 9.24614 0.3875 8.44687C0.129167 7.64759 0 6.83015 0 5.99455C0 4.28701 0.525 2.86104 1.575 1.71662C2.625 0.572207 3.93333 0 5.5 0C6.36667 0 7.19167 0.199818 7.975 0.599455C8.75833 0.999092 9.43333 1.56222 10 2.28883C10.5667 1.56222 11.2417 0.999092 12.025 0.599455C12.8083 0.199818 13.6333 0 14.5 0C16.0667 0 17.375 0.572207 18.425 1.71662C19.475 2.86104 20 4.28701 20 5.99455C20 6.83015 19.8708 7.64759 19.6125 8.44687C19.3542 9.24614 18.9 10.1226 18.25 11.0763C17.6 12.03 16.725 13.1063 15.625 14.3052C14.525 15.5041 13.1333 16.9301 11.45 18.5831L10 20Z" fill="#777777"/>
-                                </svg>
-                            </div>
-                            <div class="post-stat">
-                                <span class="post-stat-number">15</span>
-                                <svg class="post-icon" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M20 20L16 16H2C1.45 16 0.979167 15.8042 0.5875 15.4125C0.195833 15.0208 0 14.55 0 14V2C0 1.45 0.195833 0.979167 0.5875 0.5875C0.979167 0.195833 1.45 0 2 0H18C18.55 0 19.0208 0.195833 19.4125 0.5875C19.8042 0.979167 20 1.45 20 2V20ZM2 14H16.85L18 15.125V2H2V14Z" fill="#777777"/>
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
-                </article>
-
-
-                <article class="post-card">
-                    <div class="post-header">
-                        <img src="Image/pfp1Pie.jpg" alt="Alberto Aguilera Valadez" class="post-avatar">
-                        <h3 class="post-author">Alberto Aguilera Valadez</h3>
-                    </div>
-                    <div class="post-image-container">
-                        <img src="Image/copaImagen.jpeg" alt="Mundial 2026" class="post-image">
-                        <div class="post-image-gradient">
-                            <div class="post-image-title">Todo lo que tienes que saber para el Mundial de 2026</div>
-                        </div>
-                    </div>
-                    <div class="post-footer">
-                        <div class="post-tags">
-                            <span class="post-tag">#Canada</span>
-                            <span class="post-tag">#Mexico</span>
-                            <span class="post-tag">#USA</span>
-                        </div>
-                        <span class="post-date">31 / Oct / 2025</span>
-                        <div class="post-stats">
-                            <div class="post-stat">
-                                <span class="post-stat-number">1k</span>
-                                <svg class="post-icon" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M10 20L8.55 18.5831C6.86667 16.9301 5.475 15.5041 4.375 14.3052C3.275 13.1063 2.4 12.03 1.75 11.0763C1.1 10.1226 0.645833 9.24614 0.3875 8.44687C0.129167 7.64759 0 6.83015 0 5.99455C0 4.28701 0.525 2.86104 1.575 1.71662C2.625 0.572207 3.93333 0 5.5 0C6.36667 0 7.19167 0.199818 7.975 0.599455C8.75833 0.999092 9.43333 1.56222 10 2.28883C10.5667 1.56222 11.2417 0.999092 12.025 0.599455C12.8083 0.199818 13.6333 0 14.5 0C16.0667 0 17.375 0.572207 18.425 1.71662C19.475 2.86104 20 4.28701 20 5.99455C20 6.83015 19.8708 7.64759 19.6125 8.44687C19.3542 9.24614 18.9 10.1226 18.25 11.0763C17.6 12.03 16.725 13.1063 15.625 14.3052C14.525 15.5041 13.1333 16.9301 11.45 18.5831L10 20Z" fill="#777777"/>
-                                </svg>
-                            </div>
-                            <div class="post-stat">
-                                <span class="post-stat-number">15</span>
-                                <svg class="post-icon" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M20 20L16 16H2C1.45 16 0.979167 15.8042 0.5875 15.4125C0.195833 15.0208 0 14.55 0 14V2C0 1.45 0.195833 0.979167 0.5875 0.5875C0.979167 0.195833 1.45 0 2 0H18C18.55 0 19.0208 0.195833 19.4125 0.5875C19.8042 0.979167 20 1.45 20 2V20ZM2 14H16.85L18 15.125V2H2V14Z" fill="#777777"/>
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
-                </article>-->
-
-                <!-- Post 2 - Más resultados -->
-                <post-card 
-                    avatar="Image/mujerGris.jpg" 
-                    author="María González" 
-                    image="Image/sabrina.jpg" 
-                    title="Sabrina Carpenter anuncia gira mundial 2026" 
-                    tag1="#SabrinaCarpenter" 
-                    tag2="#GiraMundial" 
-                    tag3="#2026" 
-                    date="12 / Nov / 2025" 
-                    likes="890" 
-                    comments="28">
-                </post-card>
-
-                <post-card 
-                    avatar="Image/curly.jpg" 
-                    author="Carlos Rodríguez" 
-                    image="Image/gaga.jpg" 
-                    title="¿Quién es Jo Calderone? Teorías dicen que es el hermano perdido de Lady Gaga" 
-                    tag1="#Teoria" 
-                    tag2="#Misterio" 
-                    tag3="#LadyGaga" 
-                    date="10 / Nov / 2025" 
-                    likes="1.2k" 
-                    comments="42">
-                </post-card>
-
-                <post-card 
-                    avatar="Image/garage.jpg" 
-                    author="Diego Fernández" 
-                    image="Image/nicki.jpg" 
-                    title="Nicki Minaj pierde fans por apoyar a Donald Trump (Jaja que bueno)" 
-                    tag1="#Miedo" 
-                    tag2="#Terror" 
-                    tag3="#Ozuna" 
-                    date="09 / Nov / 2025" 
-                    likes="2.1k" 
-                    comments="67">
-                </post-card>
+            <!-- Pestañas: conservan lo que buscaste -->
+            <div class="tabs-section">
+                <div class="tabs">
+                    <button type="button" class="tab active" data-tipo="publicaciones">Publicaciones</button>
+                    <div class="divider"></div>
+                    <button type="button" class="tab inactive" data-tipo="usuarios">Usuarios</button>
+                </div>
             </div>
 
-            <aside class="sidebar">
-                <div class="sidebar-section">
-                    <h3 class="sidebar-title">Filtros</h3>
-                    <div class="sidebar-card">
-                        
-                        <div class="filtros-item" style="margin-bottom: 10px;">Filtrar por: </div>
-                        <div style="display: flex; justify-content: space-between; align-items: center; text-indent: 40px;" >
-                            <div style="display: flex; align-items: center;">Mas reciente: </div>
-                            <button class="filter-toggle" data-target="options1" aria-label="Toggle options for Más reciente" style="background: none; border: none; cursor: pointer;">
-                                <svg width="15" height="20" viewBox="0 0 15 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M7.5 20L0 14.1435L1.41842 13.0359L7.5 17.7651L13.5816 13.0359L15 14.1435L7.5 20ZM1.43865 6.94808L0 5.85653L7.5 0L15 5.85653L13.5614 6.94808L7.5 2.23488L1.43865 6.94808Z" fill="#4D4D4D"/>
-                                </svg>
-                            </button>
-                        </div>
-                        <div id="options1" class="filter-options" style="display: none; margin-left: 40px; margin-bottom: 10px;">
-                            <div class="option" style="padding: 5px; cursor: pointer;">Más reciente</div>
-                            <div class="option" style="padding: 5px; cursor: pointer;">Más antiguo</div>
-                            <div class="option" style="padding: 5px; cursor: pointer;">Más popular</div>
-                        </div>
+            <div class="tabs-divider"></div>
 
-                        <div class="filtros-item" style="margin-top: 10px;">Rango de fechas: </div>
-                        <div style="display: flex; justify-content: space-between; align-items: center; text-indent: 40px;" >
-                            <div style="display: flex; align-items: center;">Todo el tiempo: </div>
-                            <button class="filter-toggle" data-target="options2" aria-label="Toggle options for Todo el tiempo" style="background: none; border: none; cursor: pointer;">
-                                <svg width="15" height="20" viewBox="0 0 15 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M7.5 20L0 14.1435L1.41842 13.0359L7.5 17.7651L13.5816 13.0359L15 14.1435L7.5 20ZM1.43865 6.94808L0 5.85653L7.5 0L15 5.85653L13.5614 6.94808L7.5 2.23488L1.43865 6.94808Z" fill="#4D4D4D"/>
-                                </svg>
-                            </button>
-                        </div>
-                        <div id="options2" class="filter-options" style="display: none; margin-left: 40px; margin-bottom: 10px;">
-                            <div class="option" style="padding: 5px; cursor: pointer;">Última semana</div>
-                            <div class="option" style="padding: 5px; cursor: pointer;">Último mes</div>
-                            <div class="option" style="padding: 5px; cursor: pointer;">Todo el tiempo</div>
-                        </div>
-
-
-                        
-                        
+            <div class="content-grid">
+                <!-- Resultados (JS/busqueda.js) -->
+                <div class="posts-feed">
+                    <p id="busqueda-resumen" class="busqueda-resumen"></p>
+                    <div id="busqueda-resultados">
+                        <p style="opacity:.7;">Buscando...</p>
                     </div>
+                    <button type="button" id="busqueda-ver-mas" class="feed-ver-mas" style="display:none;">Ver más</button>
                 </div>
 
-
-
-                <div class="sidebar-section">
-                    <h3 class="sidebar-title">Descubre</h3>
-                    <div class="sidebar-card">
-                        <a href="6perfil.html" style="text-decoration: none; color: inherit">
-                        <div class="discover-item">
-                            <img src="Image/mujerGris.jpg" alt="MiguelJoaquin" class="discover-avatar">
-                            <span class="discover-name">MiguelJoaquin</span>
+                <aside class="sidebar">
+                    <!-- Filtros (solo para publicaciones) -->
+                    <div class="sidebar-section" id="filtros-seccion">
+                        <h3 class="sidebar-title">Filtros</h3>
+                        <div class="sidebar-card">
+                            <div class="filtro-grupo">
+                                <label for="filtro-orden">Ordenar por</label>
+                                <select id="filtro-orden" class="filtro-select">
+                                    <option value="reciente">Más reciente</option>
+                                    <option value="antiguo">Más antiguo</option>
+                                    <option value="popular">Más popular</option>
+                                </select>
+                            </div>
+                            <div class="filtro-grupo">
+                                <label for="filtro-rango">Rango de fechas</label>
+                                <select id="filtro-rango" class="filtro-select">
+                                    <option value="todo">Todo el tiempo</option>
+                                    <option value="semana">Última semana</option>
+                                    <option value="mes">Último mes</option>
+                                </select>
+                            </div>
                         </div>
-                        <div class="discover-item">
-                            <img src="Image/curly.jpg" alt="LuisEduardoRosas" class="discover-avatar">
-                            <span class="discover-name">LuisEduardoRosas</span>
-                        </div>
-                        <div class="discover-item">
-                            <img src="Image/ajoloEric.jpg" alt="Silentema" class="discover-avatar">
-                            <span class="discover-name">Silentema</span>
-                        </div>
-                        <div class="discover-item">
-                            <img src="Image/garage.jpg" alt="Monti_AngelDNF" class="discover-avatar">
-                            <span class="discover-name">Monti_AngelDNF</span>
-                        </div>
-                        <div class="discover-item">
-                            <img src="Image/aimep3.jpg" alt="Aimep3" class="discover-avatar">
-                            <span class="discover-name">Aimep3</span>
-                        </div>
-                        </a>
                     </div>
-                </div>
 
-                <div class="sidebar-section">
-                    <h3 class="sidebar-title">Temas Actuales</h3>
-                    <div class="sidebar-card">
-                        <a href="4busqueda.html">
-                        <div class="hashtag-item">#Mundial2026</div>
-                        <div class="hashtag-item">#WorldCup2026</div>
-                        <div class="hashtag-item">#FIFAWorldCup</div>
-                        <div class="hashtag-item">#México2026</div>
-                        <div class="hashtag-item">#Copa2026</div>
-                        </a>
+                    <div class="sidebar-section">
+                        <h3 class="sidebar-title">Descubre</h3>
+                        <div class="sidebar-card" id="descubre-lista">
+                            <p class="discover-name" style="margin:0;opacity:.7;">Cargando...</p>
+                        </div>
                     </div>
-                </div>
-            </aside>
+
+                    <div class="sidebar-section">
+                        <h3 class="sidebar-title">Temas Actuales</h3>
+                        <div class="sidebar-card" id="temas-lista">
+                            <p class="hashtag-item" style="margin:0;opacity:.7;">Cargando...</p>
+                        </div>
+                    </div>
+                </aside>
+            </div>
         </div>
     </main>
 
-    <button id="abrir-popup" class="fab-button" aria-label="Create Post">
+    <!-- Botón flotante: crear publicación (mismo modal que el inicio) -->
+    <button id="abrir-popup" class="fab-button" aria-label="Crear publicación">
         <svg class="fab-icon" viewBox="0 0 84 84" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M38.5385 57.6462H44.5384V45.6462H56.5384V39.6462H44.5384V27.6462H38.5385V39.6462H26.5385V45.6462H38.5385V57.6462ZM41.5385 72.6462C37.3885 72.6462 33.4885 71.8587 29.8385 70.2837C26.1885 68.7087 23.0135 66.5712 20.3135 63.8712C17.6135 61.1712 15.476 57.9962 13.901 54.3462C12.326 50.6962 11.5385 46.7962 11.5385 42.6462C11.5385 38.4962 12.326 34.5962 13.901 30.9462C15.476 27.2962 17.6135 24.1212 20.3135 21.4212C23.0135 18.7212 26.1885 16.5837 29.8385 15.0087C33.4885 13.4337 37.3885 12.6462 41.5385 12.6462C45.6884 12.6462 49.5885 13.4337 53.2384 15.0087C56.8885 16.5837 60.0634 18.7212 62.7635 21.4212C65.4634 24.1212 67.6009 27.2962 69.1759 30.9462C70.7509 34.5962 71.5384 38.4962 71.5384 42.6462C71.5384 46.7962 70.7509 50.6962 69.1759 54.3462C67.6009 57.9962 65.4634 61.1712 62.7635 63.8712C60.0634 66.5712 56.8885 68.7087 53.2384 70.2837C49.5885 71.8587 45.6884 72.6462 41.5385 72.6462Z"/>
         </svg>
     </button>
-    <div id="popup-overlay">
-        <div id="popup-container"></div>
-    </div>
 
-    <div id="menu-popup-overlay">
-        <div id="menu-popup-container"></div>
-    </div>
+    <div id="modal-publicacion" class="ecos-modal-overlay">
+      <div class="ecos-modal-card">
+        <div class="modal-header-section">
+          <div class="modal-author-profile">
+            <img src="PHP/avatar_actual.php" class="modal-avatar-img" alt="Avatar">
+            <span class="modal-author-name" id="modal-post-header-title">Crear Publicación</span>
+          </div>
+          <button type="button" class="modal-close-icon-btn" onclick="cerrarModalPublicacion()" aria-label="Cerrar">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
 
-    <div id="toast-notification" class="toast-notification">
-        <svg class="toast-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M9 12L11 14L15 10" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        <span class="toast-text">Publicación enviada</span>
-    </div>
+        <form id="form-publicacion-modal" onsubmit="guardarPublicacion(event)">
+          <input type="hidden" id="modal-post-id" value="">
+          <input type="hidden" id="modal-post-delete-img" value="0">
 
-    <script>
-        
-        function toggleLike(button) {
-            event.stopPropagation();
-            
-            button.classList.toggle('liked');
-            
-            button.classList.add('clicked');
-            setTimeout(() => {
-                button.classList.remove('clicked');
-            }, 600);
-            
-            const likeCountElement = button.querySelector('.post-stat-number');
-            let currentLikes = likeCountElement.textContent;
-            
-            let numericLikes;
-            if (currentLikes.includes('k')) {
-                numericLikes = parseFloat(currentLikes) * 1000;
-            } else {
-                numericLikes = parseInt(currentLikes);
-            }
-            
-            if (button.classList.contains('liked')) {
-                numericLikes++;
-            } else {
-                numericLikes--;
-            }
-            
-            let displayLikes;
-            if (numericLikes >= 1000) {
-                displayLikes = (numericLikes / 1000).toFixed(1).replace('.0', '') + 'k';
-            } else if (numericLikes >= 999 && currentLikes.includes('k')) {
-                displayLikes = '1k';
-            } else {
-                displayLikes = numericLikes.toString();
-            }
-            
-            likeCountElement.textContent = displayLikes;
-            
-            if ('vibrate' in navigator) {
-                navigator.vibrate(50);
-            }
-        }
+          <input type="text" id="modal-post-title" class="modal-title-input" placeholder="Título de la publicación...">
 
-        const postCardTemplate = `
-        <article class="post-card">
-            <a href="6perfil.html" style="text-decoration: none; color: inherit">
-                <div class="post-header">
-                    <img src="{{avatar}}" alt="Avatar" class="post-avatar">
-                    <h2 class="post-author">{{author}}</h2>
-                </div>
-            </a>
-            <a href="5verPost.html">
-                <div class="post-image-container">
-                    <img src="{{image}}" alt="" class="post-image">
-                    <div class="post-image-gradient">
-                        <div class="post-image-title">{{title}}</div>
-                    </div>
-                </div>
-            </a>
-            <div class="post-footer">
-                <a href="4busqueda.html" class="post-tags" style="text-decoration: none; color: inherit">
-                    <span class="post-tag">{{tag1}}</span>
-                    <span class="post-tag">{{tag2}}</span>
-                    <span class="post-tag">{{tag3}}</span>
-                </a>
-                <span class="post-date">{{date}}</span>
-                <div class="post-stats">
-                    <div class="post-stat like-button" onclick="toggleLike(this)">
-                        <span class="post-stat-number">{{likes}}</span>
-                        <svg class="post-icon heart-icon" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M10 20L8.55 18.5831C6.86667 16.9301 5.475 15.5041 4.375 14.3052C3.275 13.1063 2.4 12.03 1.75 11.0763C1.1 10.1226 0.645833 9.24614 0.3875 8.44687C0.129167 7.64759 0 6.83015 0 5.99455C0 4.28701 0.525 2.86104 1.575 1.71662C2.625 0.572207 3.93333 0 5.5 0C6.36667 0 7.19167 0.199818 7.975 0.599455C8.75833 0.999092 9.43333 1.56222 10 2.28883C10.5667 1.56222 11.2417 0.999092 12.025 0.599455C12.8083 0.199818 13.6333 0 14.5 0C16.0667 0 17.375 0.572207 18.425 1.71662C19.475 2.86104 20 4.28701 20 5.99455C20 6.83015 19.8708 7.64759 19.6125 8.44687C19.3542 9.24614 18.9 10.1226 18.25 11.0763C17.6 12.03 16.725 13.1063 15.625 14.3052C14.525 15.5041 13.1333 16.9301 11.45 18.5831L10 20Z" fill="#777777"/>
-                        </svg>
-                    </div>
-                    <div class="post-stat comment-button">
-                        <span class="post-stat-number">{{comments}}</span>
-                        <svg class="post-icon comment-icon" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M20 20L16 16H2C1.45 16 0.979167 15.8042 0.5875 15.4125C0.195833 15.0208 0 14.55 0 14V2C0 1.45 0.979167 0.979167 0.5875 0.5875C0.979167 0.195833 1.45 0 2 0H18C18.55 0 19.0208 0.195833 19.4125 0.5875C19.8042 0.979167 20 1.45 20 2V20ZM2 14H16.85L18 15.125V2H2V14Z" fill="#777777"/>
-                        </svg>
-                    </div>
-                </div>
+          <div class="modal-image-preview-wrapper" id="modal-post-preview-wrap">
+            <img id="modal-post-preview-img" src="" alt="Vista previa">
+            <button type="button" class="modal-remove-image-btn" onclick="removerImagenModal()" title="Quitar imagen">&times;</button>
+          </div>
+
+          <textarea id="modal-post-desc" class="modal-desc-textarea" placeholder="¿Qué quieres compartir hoy? Usa #hashtags para etiquetar tu publicación"></textarea>
+
+          <input type="file" id="modal-post-file" accept="image/*" style="display:none;" onchange="handleModalFileSelect(this)">
+
+          <div class="modal-bottom-actions">
+            <div class="modal-tools-group">
+              <button type="button" class="modal-tool-icon-btn" onclick="document.getElementById('modal-post-file').click()" title="Subir imagen desde tu computadora">
+                <img src="Image/imagen.png" alt="Imagen">
+              </button>
+              <button type="button" class="modal-tool-icon-btn" onclick="openEmojiPicker(event, 'modal-post-desc')" title="Insertar emojis">
+                <img src="Image/emoji.png" alt="Emojis">
+              </button>
             </div>
-        </article>`;
+            <button type="submit" id="modal-post-submit-btn" class="modal-submit-btn">Publicar</button>
+          </div>
+        </form>
+      </div>
+    </div>
 
-        // Función que busca <post-card> y los reemplaza
-        function expandirPostCards() {
-            const postCardElements = document.querySelectorAll('post-card');
-            
-            postCardElements.forEach(element => {
-                const avatar = element.getAttribute('avatar') || 'Image/pfp1Pie.jpg';
-                const author = element.getAttribute('author') || 'Usuario';
-                const image = element.getAttribute('image') || 'Image/copaImagen.jpeg';
-                const title = element.getAttribute('title') || 'Título del post';
-                const tag1 = element.getAttribute('tag1') || '#Tag1';
-                const tag2 = element.getAttribute('tag2') || '#Tag2';
-                const tag3 = element.getAttribute('tag3') || '#Tag3';
-                const date = element.getAttribute('date') || '14 / Nov / 2025';
-                const likes = element.getAttribute('likes') || '1k';
-                const comments = element.getAttribute('comments') || '15';
-
-                let html = postCardTemplate;
-                html = html.replace(/\{\{avatar\}\}/g, avatar);
-                html = html.replace(/\{\{author\}\}/g, author);
-                html = html.replace(/\{\{image\}\}/g, image);
-                html = html.replace(/\{\{title\}\}/g, title);
-                html = html.replace(/\{\{tag1\}\}/g, tag1);
-                html = html.replace(/\{\{tag2\}\}/g, tag2);
-                html = html.replace(/\{\{tag3\}\}/g, tag3);
-                html = html.replace(/\{\{date\}\}/g, date);
-                html = html.replace(/\{\{likes\}\}/g, likes);
-                html = html.replace(/\{\{comments\}\}/g, comments);
-
-                element.outerHTML = html;
-            });
-        }
-
-        // Inicializar cuando se carga la página
-        document.addEventListener('DOMContentLoaded', function() {
-            expandirPostCards();
-            
-            // Event listeners para botones de like
-            const likeButtons = document.querySelectorAll('.like-button');
-            likeButtons.forEach(button => {
-                button.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                });
-            });
-        });
-
-
-        function openMenuPopup() {
-            fetch('menu.html')
-                .then(res => res.text())
-                .then(html => {
-                    const parser = new DOMParser();
-                    const doc = parser.parseFromString(html, 'text/html');
-                    const bodyContent = doc.body.innerHTML;
-                    const menuPopupContainer = document.getElementById('menu-popup-container');
-                    menuPopupContainer.innerHTML = bodyContent;
-                    document.getElementById('menu-popup-overlay').style.display = 'flex';
-
-                    fetch('CSS/menu.css')
-                        .then(res => res.text())
-                        .then(css => {
-                            const styleElement = document.createElement('style');
-                            styleElement.textContent = css;
-                            document.head.appendChild(styleElement);
-
-                            const closeBtn = menuPopupContainer.querySelector('.menu-close-menu');
-                            if (closeBtn) {
-                                closeBtn.addEventListener('click', () => {
-                                    document.getElementById('menu-popup-overlay').style.display = 'none';
-                                    menuPopupContainer.innerHTML = '';
-                                    document.head.removeChild(styleElement);
-                                });
-                            }
-                        });
-                });
-        }
-
-
-        document.getElementById('abrir-popup').addEventListener('click', () => {
-            fetch('crearPublicacion.html')
-            .then(res => res.text())
-            .then(html => {
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(html, 'text/html');
-                const bodyContent = doc.body.innerHTML;
-                const styleContent = doc.head.querySelector('style').innerHTML;
-                const popupContainer = document.getElementById('popup-container');
-                const popupOverlay = document.getElementById('popup-overlay');
-                
-                const styleElement = document.createElement('style');
-                styleElement.textContent = styleContent;
-                document.head.appendChild(styleElement);
-                popupContainer.innerHTML = bodyContent;
-                popupOverlay.style.display = 'flex';
-
-                function showToast() {
-                    const toast = document.getElementById('toast-notification');
-                    toast.classList.add('show');
-                    
-                    setTimeout(() => {
-                        toast.classList.remove('show');
-                    }, 3000);
-                }
-
-                function closeModal() {
-                    popupContainer.classList.add('closing');
-                    
-                    setTimeout(() => {
-                        popupOverlay.style.display = 'none';
-                        popupContainer.classList.remove('closing');
-                        popupContainer.innerHTML = '';
-                        if (document.head.contains(styleElement)) {
-                            document.head.removeChild(styleElement);
-                        }
-                    }, 200); 
-                }
-
-                const closeBtn = popupContainer.querySelector('.close-btn');
-                if (closeBtn) {
-                    closeBtn.addEventListener('click', closeModal);
-                }
-
-                const publishBtn = popupContainer.querySelector('.publish-btn');
-                if (publishBtn) {
-                    publishBtn.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        closeModal();
-                        showToast();
-                    });
-                }
-
-
-                let mouseDownOnOverlay = false;
-
-                popupOverlay.addEventListener('mousedown', (e) => {
-                    mouseDownOnOverlay = (e.target === popupOverlay);
-                });
-
-                popupOverlay.addEventListener('mouseup', (e) => {
-                    if (mouseDownOnOverlay && e.target === popupOverlay) {
-                        closeModal();
-                    }
-                    mouseDownOnOverlay = false;
-                });
-
-                popupOverlay.addEventListener('mouseleave', () => {
-                    mouseDownOnOverlay = false;
-                });
-            });
-        });
-
-
-
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
-            });
-        });
-
-        document.addEventListener('DOMContentLoaded', function() {
-            const toggles = document.querySelectorAll('.filter-toggle');
-            toggles.forEach(toggle => {
-                toggle.addEventListener('click', function() {
-                    const targetId = this.getAttribute('data-target');
-                    const options = document.getElementById(targetId);
-                    options.style.display = options.style.display === 'none' ? 'block' : 'none';
-                });
-            });
-
-            const options = document.querySelectorAll('.option');
-            options.forEach(option => {
-                option.addEventListener('click', function() {
-                    const parent = this.parentElement;
-                    const toggle = parent.previousElementSibling.querySelector('.filter-toggle');
-                    const textDiv = toggle.parentElement.firstElementChild;
-                    textDiv.textContent = this.textContent + ':';
-                    parent.style.display = 'none';
-                });
-            });
-        });
-    </script>
+    <script src="publicaciones.js"></script>
+    <script src="JS/tarjetas.js"></script>
+    <script src="JS/busqueda.js"></script>
+    <script src="JS/descubre.js"></script>
+    <script src="JS/temas.js"></script>
 </body>
 </html>

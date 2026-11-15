@@ -2,6 +2,40 @@
  * Sistema integral de Publicaciones, Comentarios, Reacciones y Emojis para ECOS
  */
 
+// Funciones auxiliares de resolución de rutas relativas
+function getPublicacionesApiEndpoint(params = '') {
+  let base = 'api_publicaciones.php';
+  if (typeof window.projectUrl === 'function') {
+    base = window.projectUrl('api_publicaciones.php');
+  } else if (window.location.pathname.toLowerCase().includes('/php/')) {
+    base = '../api_publicaciones.php';
+  }
+  return params ? `${base}?${params}` : base;
+}
+
+function resolveAssetPath(path) {
+  if (!path) return '';
+  if (/^(?:[a-z][a-z\d+.-]*:|\/\/|\/)/i.test(path)) return path;
+  if (path.startsWith('../')) return path;
+  if (typeof window.projectUrl === 'function') {
+    return window.projectUrl(path);
+  }
+  if (window.location.pathname.toLowerCase().includes('/php/')) {
+    return '../' + path.replace(/^\/+/, '');
+  }
+  return path;
+}
+
+async function parseJsonResponse(resp) {
+  const text = await resp.text();
+  try {
+    return JSON.parse(text);
+  } catch (e) {
+    const cleanMsg = text.replace(/<[^>]*>?/gm, ' ').replace(/\s+/g, ' ').trim();
+    throw new Error(cleanMsg.substring(0, 200) || 'Error inesperado del servidor');
+  }
+}
+
 const EMOJI_LIST = [
   '😀','😃','😄','😁','😆','😅','😂','🤣','😊','😇','🙂','🙃','😉','😌','😍','🥰',
   '😘','😗','😙','😚','😋','😛','😜','🤪','😝','🤑','🤗','🤭','🤫','🤔','🤐','🤨',
@@ -175,7 +209,7 @@ function abrirModalEditarPublicacion(id, titulo, texto, imagen) {
   deleteImgInput.value = '0';
 
   if (imagen && imagen.trim() !== '') {
-    previewImg.src = imagen;
+    previewImg.src = resolveAssetPath(imagen);
     previewWrap.classList.add('has-image');
   } else {
     previewImg.src = '';
@@ -271,24 +305,25 @@ async function guardarPublicacion(e) {
     submitBtn.disabled = true;
     submitBtn.textContent = 'Guardando...';
 
-    const resp = await fetch(`api_publicaciones.php?accion=${accion}`, {
+    const resp = await fetch(getPublicacionesApiEndpoint(`accion=${accion}`), {
       method: 'POST',
       body: formData
     });
 
-    const data = await resp.json();
+    const data = await parseJsonResponse(resp);
 
     if (!data.success) {
       throw new Error(data.error || 'Error al guardar la publicación.');
     }
 
     cerrarModalPublicacion();
-    mostrarToast(esEdicion ? 'Publicación actualizada con éxito' : '¡Publicación creada con éxito!');
+    // El servidor dice si quedó publicada o pendiente de aprobación por un administrador
+    mostrarToast(data.mensaje || (esEdicion ? 'Publicación actualizada con éxito' : '¡Publicación creada con éxito!'));
 
-    // Recargar la página suavemente para actualizar el feed de publicaciones activas
+    // Recargar la página (con tiempo para leer el aviso si quedó pendiente)
     setTimeout(() => {
       window.location.reload();
-    }, 600);
+    }, data.estado === 'pendiente' ? 2600 : 700);
 
   } catch (err) {
     alert(err.message);
@@ -308,12 +343,12 @@ async function eliminarPublicacion(id) {
     const formData = new FormData();
     formData.append('id_publicacion', id);
 
-    const resp = await fetch('api_publicaciones.php?accion=eliminar_publicacion', {
+    const resp = await fetch(getPublicacionesApiEndpoint('accion=eliminar_publicacion'), {
       method: 'POST',
       body: formData
     });
 
-    const data = await resp.json();
+    const data = await parseJsonResponse(resp);
     if (!data.success) {
       throw new Error(data.error || 'No se pudo eliminar la publicación.');
     }
@@ -354,12 +389,12 @@ async function toggleLikePost(btn, idPublicacion) {
     const formData = new FormData();
     formData.append('id_publicacion', idPublicacion);
 
-    const resp = await fetch('api_publicaciones.php?accion=toggle_like', {
+    const resp = await fetch(getPublicacionesApiEndpoint('accion=toggle_like'), {
       method: 'POST',
       body: formData
     });
 
-    const data = await resp.json();
+    const data = await parseJsonResponse(resp);
     if (!data.success) {
       throw new Error(data.error || 'Error al procesar el like.');
     }
@@ -401,8 +436,8 @@ async function cargarComentarios(idPublicacion) {
   if (!listContainer) return;
 
   try {
-    const resp = await fetch(`api_publicaciones.php?accion=obtener_comentarios&id_publicacion=${idPublicacion}`);
-    const data = await resp.json();
+    const resp = await fetch(getPublicacionesApiEndpoint(`accion=obtener_comentarios&id_publicacion=${idPublicacion}`));
+    const data = await parseJsonResponse(resp);
 
     if (!data.success) {
       throw new Error(data.error || 'Error al cargar comentarios.');
@@ -423,17 +458,19 @@ function renderizarComentarios(idPublicacion, comentarios) {
     return;
   }
 
-  listContainer.innerHTML = comentarios.map(c => `
+  listContainer.innerHTML = comentarios.map(c => {
+    const urlPerfil = resolveAssetPath('PHP/6perfilPropio.php?id=' + encodeURIComponent(c.id_usuario));
+    return `
     <div class="comment-item" id="comment-item-${c.id_comentario}">
-      <img src="${c.avatar || 'Image/cuenta.png'}" class="comment-author-avatar" alt="Avatar">
+      <a href="${urlPerfil}"><img src="${resolveAssetPath(c.avatar || 'Image/cuenta.png')}" class="comment-author-avatar" alt="Avatar"></a>
       <div class="comment-content-wrap">
         <div class="comment-author-header">
-          <span class="comment-author-title">${escapeHTML(c.nombre)} ${c.alias ? `<small style="font-weight:normal;opacity:0.75;">@${escapeHTML(c.alias)}</small>` : ''}</span>
+          <a href="${urlPerfil}" style="text-decoration:none;color:inherit;"><span class="comment-author-title">${escapeHTML(c.nombre)} ${c.alias ? `<small style="font-weight:normal;opacity:0.75;">${escapeHTML(c.alias)}</small>` : ''}</span></a>
           <span class="comment-date-text">${c.fecha_formateada}</span>
         </div>
         <div class="comment-body-text" id="comment-text-display-${c.id_comentario}">${escapeHTML(c.contenido || '')}</div>
         ${c.imagen ? `
-          <img src="${escapeHTML(c.imagen)}" class="comment-attached-img" alt="Imagen adjunta" onclick="window.open(this.src, '_blank')">
+          <img src="${resolveAssetPath(c.imagen)}" class="comment-attached-img" alt="Imagen adjunta" onclick="window.open(this.src, '_blank')">
         ` : ''}
         ${c.es_propio ? `
           <div class="comment-action-links">
@@ -443,7 +480,8 @@ function renderizarComentarios(idPublicacion, comentarios) {
         ` : ''}
       </div>
     </div>
-  `).join('');
+  `;
+  }).join('');
 }
 
 // Previsualizar imagen del comentario
@@ -502,12 +540,12 @@ async function enviarComentario(idPublicacion) {
   }
 
   try {
-    const resp = await fetch('api_publicaciones.php?accion=crear_comentario', {
+    const resp = await fetch(getPublicacionesApiEndpoint('accion=crear_comentario'), {
       method: 'POST',
       body: formData
     });
 
-    const data = await resp.json();
+    const data = await parseJsonResponse(resp);
     if (!data.success) {
       throw new Error(data.error || 'No se pudo publicar el comentario.');
     }
@@ -563,12 +601,12 @@ async function guardarEdicionComentario(idComentario) {
   formData.append('contenido', contenido);
 
   try {
-    const resp = await fetch('api_publicaciones.php?accion=editar_comentario', {
+    const resp = await fetch(getPublicacionesApiEndpoint('accion=editar_comentario'), {
       method: 'POST',
       body: formData
     });
 
-    const data = await resp.json();
+    const data = await parseJsonResponse(resp);
     if (!data.success) {
       throw new Error(data.error || 'Error al editar comentario.');
     }
@@ -593,12 +631,12 @@ async function eliminarComentario(idComentario, idPublicacion) {
   formData.append('id_comentario', idComentario);
 
   try {
-    const resp = await fetch('api_publicaciones.php?accion=eliminar_comentario', {
+    const resp = await fetch(getPublicacionesApiEndpoint('accion=eliminar_comentario'), {
       method: 'POST',
       body: formData
     });
 
-    const data = await resp.json();
+    const data = await parseJsonResponse(resp);
     if (!data.success) {
       throw new Error(data.error || 'Error al eliminar comentario.');
     }
@@ -647,6 +685,15 @@ document.addEventListener('DOMContentLoaded', () => {
     fabCrear.addEventListener('click', (e) => {
       e.preventDefault();
       abrirModalCrearPublicacion();
+    });
+  }
+
+  const modalOverlay = document.getElementById('modal-publicacion');
+  if (modalOverlay) {
+    modalOverlay.addEventListener('click', (e) => {
+      if (e.target === modalOverlay) {
+        cerrarModalPublicacion();
+      }
     });
   }
 });
