@@ -1,12 +1,12 @@
 <?php
-require_once 'error_popup.php';
+require_once __DIR__ . '/error_popup.php';
 
 //Se reanuda la sesión para poder leer los datos del usuario que inició sesión
 session_start();
 
 // Si alguien intenta entrar a ajustes escribiendo la URL sin hacer login, lo regresamos
 if (!isset($_SESSION['id_usuario'])) {
-    header("Location: 2inicioSesion.html");
+    header("Location: ../2inicioSesion.html");
     exit();
 }
 
@@ -14,7 +14,7 @@ $passwordActualizada = !empty($_SESSION['password_actualizada']);
 unset($_SESSION['password_actualizada']);
 
 //Traemos la conexión a la base de datos
-require 'conexion.php';
+require __DIR__ . '/conexion.php';
 
 try {
     //Buscamos los datos reales del usuario usando su ID guardado en la sesión
@@ -42,14 +42,14 @@ try {
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>ECOS • Ajustes</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Poppins:wght@700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="CSS/ajustes.css" />
-    <link rel="stylesheet" href="CSS/back-btn.css" />
+    <link rel="stylesheet" href="../CSS/ajustes.css" />
+    <link rel="stylesheet" href="../CSS/back-btn.css" />
   </head>
 
   <body style="padding-top:70px;">
     
     <div id="header-container"></div>
-    <script src="headerLoader.js"></script>
+    <script src="../JS/headerLoader.js"></script>
 
     <button class="back-btn" onclick="history.back()" style="top: 90px;">←</button>
 
@@ -159,7 +159,7 @@ try {
               <div class="blocked-users-container">
                 <div class="blocked-users-list">
                   <div class="user-card">
-                    <img src="Image/ajoloEric.jpg" alt="Joaquin" class="user-avatar">
+                    <img src="../Image/ajoloEric.jpg" alt="Joaquin" class="user-avatar">
                     <div class="user-info">
                       <div class="user-name">Joaquin Ruenes hernandez</div>
                       <div class="user-handle">@joakini3241</div>
@@ -177,7 +177,7 @@ try {
               <div class="blocked-users-container">
                 <div class="blocked-users-list">
                   <div class="user-card">
-                    <img src="Image/caradel gordo.jpg" alt="Joaquin" class="user-avatar">
+                    <img src="../Image/caradel gordo.jpg" alt="Joaquin" class="user-avatar">
                     <div class="user-info">
                       <div class="user-name">Joaquin Ruenes hernandez</div>
                       <div class="user-handle">@joakini3241</div>

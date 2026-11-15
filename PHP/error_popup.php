@@ -12,7 +12,9 @@ function mostrarPopupError($mensaje, $destino = '2inicioSesion.html')
         JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP
     );
     $destinoJson = json_encode(
-        $destino,
+        pathinfo($destino, PATHINFO_EXTENSION) === 'php'
+            ? $destino
+            : '../' . $destino,
         JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP
     );
 

@@ -1,4 +1,24 @@
 
+const projectRootUrl = new URL('../', document.currentScript.src);
+
+window.projectUrl = function(path) {
+    return new URL(path, projectRootUrl).href;
+};
+
+window.resolveProjectPaths = function(container) {
+    container.querySelectorAll('[href], [src], [action]').forEach(element => {
+        ['href', 'src', 'action'].forEach(attribute => {
+            const value = element.getAttribute(attribute);
+            if (
+                value &&
+                !/^(?:[a-z][a-z\d+.-]*:|\/\/|#)/i.test(value)
+            ) {
+                element.setAttribute(attribute, window.projectUrl(value));
+            }
+        });
+    });
+};
+
 function cargarHeader() {
     const headerContainer = document.getElementById('header-container');
     if (headerContainer) {
@@ -6,11 +26,14 @@ function cargarHeader() {
         headerContainer.style.transition = 'opacity 0.2s ease';
     }
     
-    fetch('header1.html')
+    fetch(window.projectUrl('header1.html'))
         .then(res => res.text())
         .then(data => {
             if (headerContainer) {
-                headerContainer.innerHTML = data;
+                const template = document.createElement('template');
+                template.innerHTML = data;
+                window.resolveProjectPaths(template.content);
+                headerContainer.replaceChildren(template.content);
                 
                 const scripts = headerContainer.querySelectorAll('script');
                 scripts.forEach(script => {

@@ -6,6 +6,6 @@ session_start();
 session_destroy();
 
 //Redirigir al usuario de vuelta a la pantalla de inicio de sesión
-header("Location: 2inicioSesion.html");
+header("Location: ../2inicioSesion.html");
 exit();
 ?>

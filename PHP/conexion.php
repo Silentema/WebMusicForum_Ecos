@@ -16,7 +16,7 @@ try {
     error_log($e->getMessage());
 
     if (defined('API_IMAGE_RESPONSE') && API_IMAGE_RESPONSE) {
-        header('Location: Image/cuenta.png');
+        header('Location: ../Image/cuenta.png');
         exit();
     }
 

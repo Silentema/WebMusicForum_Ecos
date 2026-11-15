@@ -14,7 +14,7 @@ function enviarImagenAvatar($ruta)
     ];
 
     if (!in_array($mime, $tiposPermitidos, true)) {
-        header('Location: Image/cuenta.png');
+        header('Location: ../Image/cuenta.png');
         exit();
     }
 
@@ -24,7 +24,7 @@ function enviarImagenAvatar($ruta)
     exit();
 }
 
-$avatarPredeterminado = __DIR__ . DIRECTORY_SEPARATOR
+$avatarPredeterminado = dirname(__DIR__) . DIRECTORY_SEPARATOR
     . 'Image' . DIRECTORY_SEPARATOR . 'cuenta.png';
 
 if (!isset($_SESSION['id_usuario'])) {
@@ -44,7 +44,7 @@ try {
     $avatar = trim((string) $stmt->fetchColumn());
 
     $nombreArchivo = basename(str_replace('\\', '/', $avatar));
-    $rutaAvatar = __DIR__ . DIRECTORY_SEPARATOR . 'Image'
+    $rutaAvatar = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'Image'
         . DIRECTORY_SEPARATOR . $nombreArchivo;
 
     if ($nombreArchivo === '' || !is_file($rutaAvatar)) {
