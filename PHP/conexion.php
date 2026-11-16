@@ -1,11 +1,11 @@
 <?php
 require_once __DIR__ . '/error_popup.php';
 
-$host = "localhost";
-$baseDatos = "red_ecos";
-$usuario = "root";
-$password = "";
-$puerto = "3307";
+$host = "sql309.infinityfree.com";
+$baseDatos = "if0_43452573_red_ecos";
+$usuario = "if0_43452573";
+$password = "8ihuGc78xyuP3I";
+$puerto = "3306";
 
 try {
     $conexion = new PDO(
