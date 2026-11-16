@@ -1,10 +1,10 @@
 name: 🚀 ecosmusica.fwh.is
 
 on:
-  workflow_dispatch: # Uncomment below to deploy on push instead
+  workflow_dispatch: # permite lanzarlo a mano desde la pestaña Actions
   push:
     branches:
-      - main
+      - master
 
 jobs:
   deploy:
@@ -22,5 +22,3 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           server-dir: /htdocs/ # Replace with your correct path
-          retries: 3
-          retryDelay: 10
