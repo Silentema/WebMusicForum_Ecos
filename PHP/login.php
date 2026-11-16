@@ -8,9 +8,16 @@ require_once __DIR__ . '/admin.php';
 //Verificación de los datos mediante el html
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    $correo = $_POST['correo'] ?? '';
-    $contrasena_ingresada = $_POST['contrasena'] ?? '';
-    $tipo_cuenta = $_POST['tipoDeCuenta'] ?? '';
+    $correo = trim((string)($_POST['correo'] ?? ''));
+    $contrasena_ingresada = (string)($_POST['contrasena'] ?? '');
+    $tipo_cuenta = trim((string)($_POST['tipoDeCuenta'] ?? ''));
+
+    if ($correo === '' || $contrasena_ingresada === '') {
+        mostrarPopupError(
+            "Por favor ingresa tu correo y contraseña.",
+            '2inicioSesion.html'
+        );
+    }
 
     if (!in_array($tipo_cuenta, ['user', 'admin'], true)) {
         mostrarPopupError(
@@ -64,9 +71,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
     } catch (PDOException $e) {
-        error_log($e->getMessage());
+        error_log("Error en login: " . $e->getMessage());
         mostrarPopupError(
-            "Error en el login: " . $e->getMessage(),
+            "Ocurrió un error al procesar el inicio de sesión. Intenta de nuevo más tarde.",
             '2inicioSesion.html'
         );
     }

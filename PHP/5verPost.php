@@ -25,7 +25,7 @@ try {
     $stmt = $conexion->prepare("
         SELECT p.id_publicacion, p.id_usuario, p.titulo, p.texto, p.imagen, p.estado, p.fecha_creacion,
                u.nombre, u.alias, u.avatar,
-               (SELECT COUNT(*) FROM reaccion r  WHERE r.id_publicacion = p.id_publicacion) AS total_likes,
+               fn_total_likes(p.id_publicacion) AS total_likes,
                (SELECT COUNT(*) FROM reaccion r2 WHERE r2.id_publicacion = p.id_publicacion AND r2.id_usuario = :yo) AS user_liked,
                (SELECT COUNT(*) FROM comentario c WHERE c.id_publicacion = p.id_publicacion) AS total_comentarios
         FROM publicacion p
@@ -356,9 +356,7 @@ $urlAutor  = '6perfilPropio.php?id=' . (int)$post['id_usuario'];
 
     // Administrador: aprobar o rechazar desde la misma publicación
     async function moderarPublicacion(accion, id) {
-      if (accion === 'rechazar' && !confirm('¿Rechazar esta publicación?
-
-Se borrará definitivamente junto con su imagen, comentarios y likes.')) return;
+    if (accion === 'rechazar' && !confirm('¿Rechazar esta publicación?\n\nSe borrará definitivamente junto con su imagen, comentarios y likes.')) return;
       try {
         const datos = new FormData();
         datos.append('id_publicacion', id);

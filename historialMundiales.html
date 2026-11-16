@@ -39,31 +39,31 @@
         <div class="timeline-section">
             <div class="timeline-container" id="timeline-container">
                 <div class="timeline-item" data-gendre="Pop" onclick="selectGendre('Pop')">
-                    <a href="equipos.html"><img src="Image/mj.png" alt="Michael Jackson" class="timeline-logo small"></a>
+                    <a href="genero.html?g=Pop"><img src="Image/mj.png" alt="Michael Jackson" class="timeline-logo small"></a>
                     <div class="timeline-year faded">Pop</div>
                 </div>
                 <div class="timeline-item" data-gendre="Rock" onclick="selectGendre('Rock')">
-                    <a href="equipos.html"><img src="Image/kc.png" alt="Kurt Cobain" class="timeline-logo small"></a>
+                    <a href="genero.html?g=Rock"><img src="Image/kc.png" alt="Kurt Cobain" class="timeline-logo small"></a>
                     <div class="timeline-year faded">Rock</div>
                 </div>
                 <div class="timeline-item" data-gendre="Country" onclick="selectGendre('Country')">
-                    <a href="equipos.html"><img src="Image/dp.png" alt="Dolly Parton" class="timeline-logo"></a>
+                    <a href="genero.html?g=Country"><img src="Image/dp.png" alt="Dolly Parton" class="timeline-logo"></a>
                     <div class="timeline-year inactive">Country</div>
                 </div>
                 <div class="timeline-item" data-gendre="Rap" onclick="selectGendre('Rap')">
-                    <a href="equipos.html"><img src="Image/tsh.png" alt="Tupac Shakur" class="timeline-logo large"></a>
+                    <a href="genero.html?g=Rap"><img src="Image/tsh.png" alt="Tupac Shakur" class="timeline-logo large"></a>
                     <div class="timeline-year active">Rap</div>
                 </div>
                 <div class="timeline-item" data-gendre="Regional" onclick="selectGendre('Regional')">
-                    <a href="equipos.html"><img src="Image/jg.png" alt="Juan Gabriel" class="timeline-logo"></a>
+                    <a href="genero.html?g=Regional"><img src="Image/jg.png" alt="Juan Gabriel" class="timeline-logo"></a>
                     <div class="timeline-year inactive">Regional</div>
                 </div>
                 <div class="timeline-item" data-gendre="Electronica" onclick="selectGendre('Electronica')">
-                    <a href="equipos.html"><img src="Image/punk.png" alt="Daft Punk" class="timeline-logo small"></a>
+                    <a href="genero.html?g=Electronica"><img src="Image/punk.png" alt="Daft Punk" class="timeline-logo small"></a>
                     <div class="timeline-year faded">Electronica</div>
                 </div>
                 <div class="timeline-item" data-gendre="Reggaeton" onclick="selectGendre('Reggaeton')">
-                    <a href="equipos.html"><img src="Image/kg.png" alt="Karol G" class="timeline-logo small"></a>
+                    <a href="genero.html?g=Reggaeton"><img src="Image/kg.png" alt="Karol G" class="timeline-logo small"></a>
                     <div class="timeline-year faded">Reggaeton</div>
                 </div>
             </div>
@@ -122,6 +122,15 @@
                 setTimeout(() => {
                     restoreOriginalContent();
                 }, 600);
+            }
+        }
+
+        function selectGendre(genero) {
+            const nuevo = Array.from(timelineItems).findIndex(i => i.dataset.gendre === genero);
+            if (nuevo !== -1 && nuevo !== currentIndex) {
+                currentIndex = nuevo;
+                updateTimeline();
+                centerSelectedItem();
             }
         }
 

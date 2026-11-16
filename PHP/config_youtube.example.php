@@ -1,0 +1,2 @@
+<?php
+define('YOUTUBE_API_KEY', 'PEGA_AQUI_TU_LLAVE');

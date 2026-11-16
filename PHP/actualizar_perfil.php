@@ -60,7 +60,8 @@ try {
             continue;
         }
 
-        $valor = trim((string) $_POST[$campo]);
+        // strip_tags elimina cualquier etiqueta HTML/JS que el usuario intente inyectar en campos de texto libre
+        $valor = trim(strip_tags((string) $_POST[$campo]));
 
         if ($campo === 'email') {
             $valor = strtolower($valor);
@@ -92,8 +93,13 @@ try {
             }
         }
 
-        if ($campo === 'nombre' && $valor === '') {
-            throw new RuntimeException('El nombre no puede estar vacío.');
+        if ($campo === 'nombre') {
+            if ($valor === '') {
+                throw new RuntimeException('El nombre no puede estar vacío.');
+            }
+            if (mb_strlen($valor, 'UTF-8') > 100) {
+                throw new RuntimeException('El nombre no puede superar los 100 caracteres.');
+            }
         }
 
         if ($campo === 'genero') {
@@ -151,6 +157,13 @@ try {
         ) {
             throw new RuntimeException(
                 'La contraseña actual es incorrecta.'
+            );
+        }
+
+        // Validar longitud mínima de la nueva contraseña
+        if (strlen($_POST['new_password']) < 6) {
+            throw new RuntimeException(
+                'La nueva contraseña debe tener al menos 6 caracteres.'
             );
         }
 

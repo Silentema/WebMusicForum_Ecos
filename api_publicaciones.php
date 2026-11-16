@@ -323,8 +323,9 @@ function obtenerHashtagsDe($conexion, array $ids) {
 try {
     switch ($accion) {
         case 'crear_publicacion':
-            $titulo = trim($_POST['titulo'] ?? '');
-            $texto = trim($_POST['texto'] ?? '');
+            // strip_tags previene que se guarde código HTML/JavaScript malicioso (XSS)
+            $titulo = trim(strip_tags($_POST['titulo'] ?? ''));
+            $texto  = trim(strip_tags($_POST['texto']  ?? ''));
             $imagenRuta = null;
 
             if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
@@ -364,8 +365,9 @@ try {
 
         case 'editar_publicacion':
             $id_pub = (int)($_POST['id_publicacion'] ?? 0);
-            $titulo = trim($_POST['titulo'] ?? '');
-            $texto = trim($_POST['texto'] ?? '');
+            // strip_tags previene XSS al editar publicaciones
+            $titulo = trim(strip_tags($_POST['titulo'] ?? ''));
+            $texto  = trim(strip_tags($_POST['texto']  ?? ''));
             $eliminar_imagen = !empty($_POST['eliminar_imagen']);
 
             // Verificar pertenencia
@@ -483,12 +485,11 @@ try {
             verificarPublicacionVisible($conexion, $id_pub, $id_usuario, $es_admin);
 
             $stmt = $conexion->prepare("
-                SELECT c.id_comentario, c.id_publicacion, c.id_usuario, c.contenido, c.imagen, c.fecha_creacion,
-                       u.nombre, u.alias, u.avatar
-                FROM comentario c
-                JOIN usuario u ON c.id_usuario = u.id_usuario
-                WHERE c.id_publicacion = :pub
-                ORDER BY c.id_comentario ASC
+                SELECT id_comentario, id_publicacion, id_usuario, contenido, imagen, fecha_creacion,
+                    nombre, alias, avatar
+                FROM v_comentarios_detalle
+                WHERE id_publicacion = :pub
+                ORDER BY id_comentario ASC
             ");
             $stmt->execute([':pub' => $id_pub]);
             $comentarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -508,8 +509,9 @@ try {
             break;
 
         case 'crear_comentario':
-            $id_pub = (int)($_POST['id_publicacion'] ?? 0);
-            $contenido = trim($_POST['contenido'] ?? '');
+            $id_pub   = (int)($_POST['id_publicacion'] ?? 0);
+            // strip_tags previene XSS en comentarios
+            $contenido = trim(strip_tags($_POST['contenido'] ?? ''));
             $imagenRuta = null;
 
             if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
@@ -569,7 +571,8 @@ try {
 
         case 'editar_comentario':
             $id_com = (int)($_POST['id_comentario'] ?? 0);
-            $contenido = trim($_POST['contenido'] ?? '');
+            // strip_tags previene XSS al editar comentarios
+            $contenido = trim(strip_tags($_POST['contenido'] ?? ''));
             $eliminar_imagen = !empty($_POST['eliminar_imagen']);
 
             $check = $conexion->prepare("SELECT * FROM comentario WHERE id_comentario = :id AND id_usuario = :user");
@@ -716,8 +719,8 @@ try {
 
             $stmt = $conexion->prepare("
                 SELECT u.id_usuario, u.nombre, u.alias, u.avatar, u.bio,
-                       (SELECT COUNT(*) FROM relacion_usuario s WHERE s.id_usuario_destino = u.id_usuario AND s.tipo_relacion = 'seguir') AS seguidores,
-                       (SELECT COUNT(*) FROM relacion_usuario s2 WHERE s2.id_usuario_origen = :yo3 AND s2.id_usuario_destino = u.id_usuario AND s2.tipo_relacion = 'seguir') AS lo_sigo
+                     fn_total_seguidores(u.id_usuario) AS seguidores,
+                    (SELECT COUNT(*) FROM relacion_usuario s2 WHERE s2.id_usuario_origen = :yo3 AND s2.id_usuario_destino = u.id_usuario AND s2.tipo_relacion = 'seguir') AS lo_sigo
                 FROM usuario u
                 WHERE " . implode(' AND ', $where) . "
                 ORDER BY $ordenRelevancia DESC, seguidores DESC, u.nombre ASC
@@ -853,7 +856,7 @@ try {
                 $activo = true;
             }
 
-            $cnt = $conexion->prepare("SELECT COUNT(*) FROM relacion_usuario WHERE id_usuario_destino = :id AND tipo_relacion = 'seguir'");
+            $cnt = $conexion->prepare("SELECT fn_total_seguidores(:id)");
             $cnt->execute([':id' => $id_destino]);
 
             responderJSON([
@@ -877,13 +880,12 @@ try {
             if ($accion === 'admin_pendientes') {
                 // Las más antiguas primero: así se revisan en el orden en que llegaron
                 $stmt = $conexion->query("
-                    SELECT p.id_publicacion, p.id_usuario, p.titulo, p.texto, p.imagen, p.fecha_creacion,
-                           u.nombre, u.alias, u.avatar
-                    FROM publicacion p
-                    JOIN usuario u ON u.id_usuario = p.id_usuario
-                    WHERE p.estado = 'pendiente'
-                    ORDER BY p.fecha_creacion ASC, p.id_publicacion ASC
+                    SELECT id_publicacion, id_usuario, titulo, texto, imagen, fecha_creacion,
+                        nombre, alias, avatar
+                    FROM v_publicaciones_pendientes
+                    ORDER BY fecha_creacion ASC, id_publicacion ASC
                 ");
+
                 $pendientes = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 $hashtags = obtenerHashtagsDe($conexion, array_column($pendientes, 'id_publicacion'));
                 foreach ($pendientes as &$p) {

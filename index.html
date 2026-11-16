@@ -266,10 +266,10 @@
           </svg>
         </div>
       </div>
-      <input type="password" name="contrasena" class="form-control" placeholder="Contraseña" required>
-      <div class="invalid-feedback">Ingresa una contraseña.</div>
-      <input type="password" name="confirmar_contrasena" class="form-control" placeholder="Confirmar contraseña" required>
-      <div class="invalid-feedback">Confirma tu contraseña.</div>
+      <input type="password" name="contrasena" id="input-contrasena" class="form-control" placeholder="Contraseña (mínimo 6 caracteres)" minlength="6" required>
+      <div class="invalid-feedback" id="invalid-pass">Ingresa una contraseña de al menos 6 caracteres.</div>
+      <input type="password" name="confirmar_contrasena" id="input-confirmar-contrasena" class="form-control" placeholder="Confirmar contraseña" required>
+      <div class="invalid-feedback" id="invalid-confirm-pass">Las contraseñas no coinciden.</div>
       
       
 
@@ -295,6 +295,16 @@
         document.getElementById('invalid-month').style.display = 'none';
         document.getElementById('invalid-year').style.display = 'none';
         document.getElementById('invalid-age').style.display = 'none';
+
+        const passInput = document.getElementById('input-contrasena');
+        const confirmPassInput = document.getElementById('input-confirmar-contrasena');
+        const invalidPass = document.getElementById('invalid-pass');
+        const invalidConfirmPass = document.getElementById('invalid-confirm-pass');
+
+        invalidPass.style.display = 'none';
+        invalidConfirmPass.style.display = 'none';
+        passInput.classList.remove('is-invalid');
+        confirmPassInput.classList.remove('is-invalid');
 
         let showError = false;
         const day = form.querySelector('select[name="day"]');
@@ -330,7 +340,6 @@
           edadValida = false;
         }
 
-        
         if (year.value && edadValida) {
           year.classList.add('is-valid');
           year.classList.remove('is-invalid');
@@ -341,18 +350,27 @@
           year.classList.remove('is-valid', 'is-invalid');
         }
 
+        // Validación de contraseñas
+        if (!passInput.value || passInput.value.length < 6) {
+          invalidPass.style.display = 'block';
+          passInput.classList.add('is-invalid');
+          showError = true;
+        }
+
+        if (!confirmPassInput.value || passInput.value !== confirmPassInput.value) {
+          invalidConfirmPass.style.display = 'block';
+          confirmPassInput.classList.add('is-invalid');
+          showError = true;
+        }
+
         if (!form.checkValidity() || showError) {
           event.preventDefault();
           event.stopPropagation();
-        } else {
-          //event.preventDefault();
-          //window.location.href = '2inicioSesion.html';
         }
 
         form.classList.add('was-validated');
       }, false);
 
-      
       ['day','month','year'].forEach(name => {
         form.querySelector(`select[name="${name}"]`).addEventListener('input', (e) => {
           document.getElementById(`invalid-${name}`).style.display = 'none';
@@ -363,6 +381,25 @@
           }
         });
       });
+
+      const passInput = document.getElementById('input-contrasena');
+      const confirmPassInput = document.getElementById('input-confirmar-contrasena');
+      if (passInput && confirmPassInput) {
+        passInput.addEventListener('input', () => {
+          document.getElementById('invalid-pass').style.display = 'none';
+          passInput.classList.remove('is-invalid');
+          if (confirmPassInput.value && passInput.value === confirmPassInput.value) {
+            document.getElementById('invalid-confirm-pass').style.display = 'none';
+            confirmPassInput.classList.remove('is-invalid');
+          }
+        });
+        confirmPassInput.addEventListener('input', () => {
+          if (passInput.value === confirmPassInput.value) {
+            document.getElementById('invalid-confirm-pass').style.display = 'none';
+            confirmPassInput.classList.remove('is-invalid');
+          }
+        });
+      }
     });
   })();
 </script>
