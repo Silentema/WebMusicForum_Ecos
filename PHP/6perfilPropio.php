@@ -45,11 +45,15 @@ try {
         $yo = $stmtYo->fetch(PDO::FETCH_ASSOC) ?: [];
     }
 
-    // Seguidores / seguidos del perfil (vista v_seguidores_por_usuario, que usa fn_total_seguidores)
+    // Seguidores / seguidos del perfil
     $stmtCnt = $conexion->prepare("
-        SELECT seguidores, siguiendo AS seguidos
-        FROM v_seguidores_por_usuario
-        WHERE id_usuario = :id
+        SELECT
+            (SELECT COUNT(*) FROM relacion_usuario r
+              WHERE r.id_usuario_destino = u.id_usuario AND r.tipo_relacion = 'seguir') AS seguidores,
+            (SELECT COUNT(*) FROM relacion_usuario r
+              WHERE r.id_usuario_origen = u.id_usuario AND r.tipo_relacion = 'seguir') AS seguidos
+        FROM usuario u
+        WHERE u.id_usuario = :id
     ");
     $stmtCnt->execute([':id' => $id_perfil]);
     $conteo = $stmtCnt->fetch(PDO::FETCH_ASSOC);
@@ -74,7 +78,7 @@ try {
         $sqlPubs = "
             SELECT p.id_publicacion, p.titulo, p.texto, p.imagen, p.estado, p.fecha_creacion,
                    u.nombre, u.alias, u.avatar,
-                   fn_total_likes(p.id_publicacion) AS total_likes,
+                   (SELECT COUNT(*) FROM reaccion rl WHERE rl.id_publicacion = p.id_publicacion) AS total_likes,
                    (SELECT COUNT(*) FROM reaccion r2 WHERE r2.id_publicacion = p.id_publicacion AND r2.id_usuario = :id_sesion) AS user_liked,
                    (SELECT COUNT(*) FROM comentario c WHERE c.id_publicacion = p.id_publicacion) AS total_comentarios
             FROM publicacion p

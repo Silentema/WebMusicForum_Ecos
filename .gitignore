@@ -2,3 +2,5 @@ PHP/config_youtube.php
 PHP/cache_youtube/
 desktop.ini
 *.zip
+# Respaldo con datos reales de usuarios (no subir a GitHub)
+Copiar y pegar/red_ecos_infinityfree.sql

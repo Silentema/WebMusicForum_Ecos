@@ -1,9 +1,8 @@
 <?php require __DIR__ . '/PHP/solo_admin.php'; ?>
 <?php
-//Estadísticas del administrador: todo sale de las VIEWS y FUNCTIONS de la base de datos.
-//Views usadas: v_feed_publico, v_publicaciones_pendientes, v_comentarios_detalle,
-//v_usuarios_por_pais (usa fn_edad), v_ranking_usuarios, v_seguidores_por_usuario,
-//v_hashtags_populares, v_publicaciones_populares (usan fn_total_likes / fn_total_seguidores)
+//Estadísticas del administrador.
+//Todo se calcula con consultas directas a las tablas (sin vistas ni funciones de MySQL),
+//porque el hosting gratuito (InfinityFree) no permite ejecutar funciones almacenadas.
 
 $errores = [];
 
@@ -28,28 +27,62 @@ function h($t) {
 }
 
 // Tarjetas de resumen
-$totalUsuarios    = numero($conexion, "SELECT COALESCE(SUM(total_usuarios), 0) FROM v_usuarios_por_pais");
-$totalAprobadas   = numero($conexion, "SELECT COUNT(*) FROM v_feed_publico");
-$totalPendientes  = numero($conexion, "SELECT COUNT(*) FROM v_publicaciones_pendientes");
-$totalComentarios = numero($conexion, "SELECT COUNT(*) FROM v_comentarios_detalle");
+$totalUsuarios    = numero($conexion, "SELECT COUNT(*) FROM usuario");
+$totalAprobadas   = numero($conexion, "
+    SELECT COUNT(*) FROM publicacion p
+    JOIN usuario u ON u.id_usuario = p.id_usuario
+    WHERE p.estado = 'aprobada'");
+$totalPendientes  = numero($conexion, "
+    SELECT COUNT(*) FROM publicacion p
+    JOIN usuario u ON u.id_usuario = p.id_usuario
+    WHERE p.estado = 'pendiente'");
+$totalComentarios = numero($conexion, "
+    SELECT COUNT(*) FROM comentario c
+    JOIN publicacion p ON p.id_publicacion = c.id_publicacion
+    JOIN usuario u     ON u.id_usuario = c.id_usuario");
 
 // Tablas
 $ranking = filas($conexion, "
     SELECT usuario, avatar, publicaciones, likes_recibidos, seguidores
-    FROM v_ranking_usuarios
+    FROM (
+        SELECT COALESCE(NULLIF(u.alias, ''), u.nombre) AS usuario,
+               u.avatar,
+               (SELECT COUNT(*) FROM publicacion p
+                 WHERE p.id_usuario = u.id_usuario AND p.estado = 'aprobada') AS publicaciones,
+               (SELECT COUNT(*) FROM reaccion r
+                  JOIN publicacion p ON p.id_publicacion = r.id_publicacion
+                 WHERE p.id_usuario = u.id_usuario AND p.estado = 'aprobada') AS likes_recibidos,
+               (SELECT COUNT(*) FROM relacion_usuario s
+                 WHERE s.id_usuario_destino = u.id_usuario AND s.tipo_relacion = 'seguir') AS seguidores
+        FROM usuario u
+    ) AS ranking
     ORDER BY likes_recibidos DESC, seguidores DESC, publicaciones DESC
     LIMIT 10");
 
+// Puntaje = likes + 2 × comentarios (solo publicaciones aprobadas con alguna interacción)
 $populares = filas($conexion, "
-    SELECT id_publicacion, titulo, autor, total_likes, total_comentarios, puntaje
-    FROM v_publicaciones_populares
+    SELECT id_publicacion, titulo, autor, total_likes, total_comentarios,
+           total_likes + total_comentarios * 2 AS puntaje
+    FROM (
+        SELECT p.id_publicacion, p.titulo, p.fecha_creacion,
+               COALESCE(NULLIF(u.alias, ''), u.nombre) AS autor,
+               (SELECT COUNT(*) FROM reaccion r   WHERE r.id_publicacion = p.id_publicacion) AS total_likes,
+               (SELECT COUNT(*) FROM comentario c WHERE c.id_publicacion = p.id_publicacion) AS total_comentarios
+        FROM publicacion p
+        JOIN usuario u ON u.id_usuario = p.id_usuario
+        WHERE p.estado = 'aprobada'
+    ) AS feed
+    WHERE total_likes > 0 OR total_comentarios > 0
     ORDER BY puntaje DESC, fecha_creacion DESC
     LIMIT 10");
 
 $hashtags = filas($conexion, "
-    SELECT hashtag, veces_usado
-    FROM v_hashtags_populares
-    WHERE veces_usado > 0
+    SELECT h.nombre AS hashtag, COUNT(p.id_publicacion) AS veces_usado
+    FROM hashtag h
+    LEFT JOIN publicacion_hashtag ph ON ph.id_hashtag = h.id_hashtag
+    LEFT JOIN publicacion p ON p.id_publicacion = ph.id_publicacion AND p.estado = 'aprobada'
+    GROUP BY h.id_hashtag, h.nombre
+    HAVING veces_usado > 0
     ORDER BY veces_usado DESC, hashtag ASC
     LIMIT 10");
 $maxHashtag = 1;
@@ -58,13 +91,23 @@ foreach ($hashtags as $t) {
 }
 
 $paises = filas($conexion, "
-    SELECT pais, total_usuarios, edad_promedio
-    FROM v_usuarios_por_pais
+    SELECT COALESCE(NULLIF(pais, ''), 'Sin especificar') AS pais,
+           COUNT(*) AS total_usuarios,
+           ROUND(AVG(TIMESTAMPDIFF(YEAR, fecha_nacimiento, CURDATE())), 1) AS edad_promedio
+    FROM usuario
+    GROUP BY COALESCE(NULLIF(pais, ''), 'Sin especificar')
     ORDER BY total_usuarios DESC, pais ASC");
 
 $seguidores = filas($conexion, "
     SELECT usuario, seguidores, siguiendo
-    FROM v_seguidores_por_usuario
+    FROM (
+        SELECT COALESCE(NULLIF(u.alias, ''), u.nombre) AS usuario,
+               (SELECT COUNT(*) FROM relacion_usuario r
+                 WHERE r.id_usuario_destino = u.id_usuario AND r.tipo_relacion = 'seguir') AS seguidores,
+               (SELECT COUNT(*) FROM relacion_usuario r
+                 WHERE r.id_usuario_origen = u.id_usuario AND r.tipo_relacion = 'seguir') AS siguiendo
+        FROM usuario u
+    ) AS seg
     ORDER BY seguidores DESC, siguiendo DESC
     LIMIT 10");
 ?>
@@ -134,7 +177,7 @@ $seguidores = filas($conexion, "
 
             <section class="est-card">
                 <h2>Ranking de usuarios</h2>
-                <p class="est-fuente">Vista v_ranking_usuarios · function fn_total_seguidores</p>
+                <p class="est-fuente">Publicaciones aprobadas, likes recibidos y seguidores</p>
                 <?php if ($ranking): ?>
                 <table>
                     <tr><th>Usuario</th><th class="num">Posts</th><th class="num">Likes</th><th class="num">Seguidores</th></tr>
@@ -157,7 +200,7 @@ $seguidores = filas($conexion, "
 
             <section class="est-card">
                 <h2>Publicaciones populares</h2>
-                <p class="est-fuente">Vista v_publicaciones_populares · puntaje = likes + 2 × comentarios · function fn_total_likes</p>
+                <p class="est-fuente">Puntaje = likes + 2 × comentarios</p>
                 <?php if ($populares): ?>
                 <table>
                     <tr><th>Título</th><th>Autor</th><th class="num">Likes</th><th class="num">Coment.</th><th class="num">Puntaje</th></tr>
@@ -176,7 +219,7 @@ $seguidores = filas($conexion, "
 
             <section class="est-card">
                 <h2>Hashtags más usados</h2>
-                <p class="est-fuente">Vista v_hashtags_populares (solo publicaciones aprobadas)</p>
+                <p class="est-fuente">Solo publicaciones aprobadas</p>
                 <?php if ($hashtags): ?>
                 <table>
                     <tr><th>Hashtag</th><th style="width:45%">Uso</th><th class="num">Veces</th></tr>
@@ -193,7 +236,7 @@ $seguidores = filas($conexion, "
 
             <section class="est-card">
                 <h2>Usuarios por país</h2>
-                <p class="est-fuente">Vista v_usuarios_por_pais · function fn_edad</p>
+                <p class="est-fuente">Usuarios registrados y su edad promedio</p>
                 <?php if ($paises): ?>
                 <table>
                     <tr><th>País</th><th class="num">Usuarios</th><th class="num">Edad promedio</th></tr>
@@ -210,7 +253,7 @@ $seguidores = filas($conexion, "
 
             <section class="est-card">
                 <h2>Seguidores</h2>
-                <p class="est-fuente">Vista v_seguidores_por_usuario</p>
+                <p class="est-fuente">Seguidores y cuentas que sigue cada usuario</p>
                 <?php if ($seguidores): ?>
                 <table>
                     <tr><th>Usuario</th><th class="num">Seguidores</th><th class="num">Siguiendo</th></tr>

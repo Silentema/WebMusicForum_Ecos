@@ -336,8 +336,13 @@ try {
                 throw new Exception('La publicación debe contener al menos un título, descripción o imagen.');
             }
 
-            // Las publicaciones nuevas esperan aprobación (las de un administrador se aprueban solas)
-            $estado = $es_admin ? 'aprobada' : 'pendiente';
+            // Las publicaciones nuevas esperan aprobación (las de un administrador se aprueban solas).
+            // Se revisa el rol guardado en la base (id_rol = 2), aunque la sesión haya entrado
+            // como usuario normal; antes lo hacía el trigger trg_publicacion_bi.
+            $rolAutor = $conexion->prepare("SELECT id_rol FROM usuario WHERE id_usuario = :id");
+            $rolAutor->execute([':id' => $id_usuario]);
+            $autorEsAdmin = esCuentaAdministrador($rolAutor->fetch(PDO::FETCH_ASSOC));
+            $estado = ($es_admin || $autorEsAdmin) ? 'aprobada' : 'pendiente';
 
             $sql = "INSERT INTO publicacion (id_usuario, titulo, texto, imagen, estado, fecha_creacion)
                     VALUES (:id_usuario, :titulo, :texto, :imagen, :estado, NOW())";
@@ -485,11 +490,13 @@ try {
             verificarPublicacionVisible($conexion, $id_pub, $id_usuario, $es_admin);
 
             $stmt = $conexion->prepare("
-                SELECT id_comentario, id_publicacion, id_usuario, contenido, imagen, fecha_creacion,
-                    nombre, alias, avatar
-                FROM v_comentarios_detalle
-                WHERE id_publicacion = :pub
-                ORDER BY id_comentario ASC
+                SELECT c.id_comentario, c.id_publicacion, u.id_usuario, c.contenido, c.imagen, c.fecha_creacion,
+                    u.nombre, u.alias, u.avatar
+                FROM comentario c
+                JOIN publicacion p ON p.id_publicacion = c.id_publicacion
+                JOIN usuario u     ON u.id_usuario = c.id_usuario
+                WHERE c.id_publicacion = :pub
+                ORDER BY c.id_comentario ASC
             ");
             $stmt->execute([':pub' => $id_pub]);
             $comentarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -719,7 +726,7 @@ try {
 
             $stmt = $conexion->prepare("
                 SELECT u.id_usuario, u.nombre, u.alias, u.avatar, u.bio,
-                     fn_total_seguidores(u.id_usuario) AS seguidores,
+                     (SELECT COUNT(*) FROM relacion_usuario s1 WHERE s1.id_usuario_destino = u.id_usuario AND s1.tipo_relacion = 'seguir') AS seguidores,
                     (SELECT COUNT(*) FROM relacion_usuario s2 WHERE s2.id_usuario_origen = :yo3 AND s2.id_usuario_destino = u.id_usuario AND s2.tipo_relacion = 'seguir') AS lo_sigo
                 FROM usuario u
                 WHERE " . implode(' AND ', $where) . "
@@ -856,7 +863,10 @@ try {
                 $activo = true;
             }
 
-            $cnt = $conexion->prepare("SELECT fn_total_seguidores(:id)");
+            $cnt = $conexion->prepare("
+                SELECT COUNT(*) FROM relacion_usuario
+                WHERE id_usuario_destino = :id AND tipo_relacion = 'seguir'
+            ");
             $cnt->execute([':id' => $id_destino]);
 
             responderJSON([
@@ -880,10 +890,12 @@ try {
             if ($accion === 'admin_pendientes') {
                 // Las más antiguas primero: así se revisan en el orden en que llegaron
                 $stmt = $conexion->query("
-                    SELECT id_publicacion, id_usuario, titulo, texto, imagen, fecha_creacion,
-                        nombre, alias, avatar
-                    FROM v_publicaciones_pendientes
-                    ORDER BY fecha_creacion ASC, id_publicacion ASC
+                    SELECT p.id_publicacion, u.id_usuario, p.titulo, p.texto, p.imagen, p.fecha_creacion,
+                        u.nombre, u.alias, u.avatar
+                    FROM publicacion p
+                    JOIN usuario u ON u.id_usuario = p.id_usuario
+                    WHERE p.estado = 'pendiente'
+                    ORDER BY p.fecha_creacion ASC, p.id_publicacion ASC
                 ");
 
                 $pendientes = $stmt->fetchAll(PDO::FETCH_ASSOC);

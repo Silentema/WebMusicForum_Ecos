@@ -25,7 +25,7 @@ try {
     $stmt = $conexion->prepare("
         SELECT p.id_publicacion, p.id_usuario, p.titulo, p.texto, p.imagen, p.estado, p.fecha_creacion,
                u.nombre, u.alias, u.avatar,
-               fn_total_likes(p.id_publicacion) AS total_likes,
+               (SELECT COUNT(*) FROM reaccion rl WHERE rl.id_publicacion = p.id_publicacion) AS total_likes,
                (SELECT COUNT(*) FROM reaccion r2 WHERE r2.id_publicacion = p.id_publicacion AND r2.id_usuario = :yo) AS user_liked,
                (SELECT COUNT(*) FROM comentario c WHERE c.id_publicacion = p.id_publicacion) AS total_comentarios
         FROM publicacion p
